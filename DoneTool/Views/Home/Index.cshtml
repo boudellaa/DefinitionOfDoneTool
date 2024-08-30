@@ -1,0 +1,35 @@
+﻿@model List<string>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TASK 1 - Definition of Done Tool</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">TASK 1</h1>
+
+        <div class="mt-4">
+            <h2>Checklist</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Checklist Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
