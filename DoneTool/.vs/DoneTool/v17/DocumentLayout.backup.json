@@ -3,7 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\AliBO\\source\\repos\\ConsoleTest\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{01D7CB28-5036-4735-A26F-5F4B5AFECB56}|..\\TaskDataMiner\\Utils.NAME\\TaskDataMiner.csproj|c:\\users\\alibo\\source\\repos\\ddt\\taskdataminer\\utils.name\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01D7CB28-5036-4735-A26F-5F4B5AFECB56}|..\\TaskDataMiner\\Utils.NAME\\TaskDataMiner.csproj|c:\\users\\alibo\\source\\repos\\ddt\\taskdataminer\\utils.name\\services\\jsontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,14 +21,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\ConsoleTest\\Program.cs",
-              "RelativeDocumentMoniker": "..\\..\\ConsoleTest\\Program.cs",
-              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\ConsoleTest\\Program.cs",
-              "RelativeToolTip": "..\\..\\ConsoleTest\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Title": "TaskService.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
+              "RelativeDocumentMoniker": "..\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
+              "RelativeToolTip": "..\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAgwFEAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-02T08:24:38.863Z",
+              "WhenOpened": "2024-09-02T09:51:03.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "JsonTaskService.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
+              "RelativeDocumentMoniker": "..\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
+              "RelativeToolTip": "..\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-02T09:50:58.551Z",
               "EditorCaption": ""
             }
           ]

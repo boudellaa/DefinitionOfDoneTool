@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Skyline.DataMiner.TaskDataMiner</name>
+    </assembly>
+    <members>
+        <member name="T:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo">
+            <summary>
+            Represents the information about a task, including its ID, title, type, developer, and guard.
+            </summary>
+        </member>
+        <member name="P:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo.TaskID">
+            <summary>
+            Gets or sets the unique identifier for the task.
+            </summary>
+        </member>
+        <member name="P:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo.TaskTitle">
+            <summary>
+            Gets or sets the title or name of the task.
+            </summary>
+        </member>
+        <member name="P:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo.TaskType">
+            <summary>
+            Gets or sets the type or category of the task.
+            </summary>
+        </member>
+        <member name="P:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo.Developer">
+            <summary>
+            Gets or sets the name of the developer assigned to the task.
+            </summary>
+        </member>
+        <member name="P:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo.Guard">
+            <summary>
+            Gets or sets the name of the guard responsible for the task.
+            </summary>
+        </member>
+        <member name="T:Skyline.DataMiner.TaskDataMiner.Services.JsonTaskService">
+            <summary>
+            Provides methods to read and write task information to and from JSON files.
+            </summary>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.JsonTaskService.#ctor(Microsoft.Extensions.Logging.ILogger{Skyline.DataMiner.TaskDataMiner.Services.JsonTaskService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Skyline.DataMiner.TaskDataMiner.Services.JsonTaskService"/> class.
+            </summary>
+            <param name="logger">The logger instance used to log messages and errors.</param>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.JsonTaskService.ReadTaskFromJson(System.String)">
+            <summary>
+            Reads the task information from a JSON file.
+            </summary>
+            <param name="filePath">The path to the JSON file containing the task information.</param>
+            <returns>The deserialized <see cref="T:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo"/> object from the JSON file, or <c>null</c> if deserialization fails.</returns>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.JsonTaskService.WriteTaskToJson(Skyline.DataMiner.TaskDataMiner.Models.TaskInfo,System.String)">
+            <summary>
+            Writes the task information to a JSON file.
+            </summary>
+            <param name="taskInfo">The <see cref="T:Skyline.DataMiner.TaskDataMiner.Models.TaskInfo"/> object containing the task information to be serialized.</param>
+            <param name="filePath">The path to the JSON file where the task information will be saved.</param>
+        </member>
+        <member name="T:Skyline.DataMiner.TaskDataMiner.Services.TaskService">
+            <summary>
+            Service class to manage task-related operations, such as retrieving checks for a task.
+            </summary>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.TaskService.#ctor(DoneTool.Data.DoneToolContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Skyline.DataMiner.TaskDataMiner.Services.TaskService"/> class.
+            </summary>
+            <param name="context">The database context used to interact with the DoneTool database.</param>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.TaskService.GetChecksForTask(Skyline.DataMiner.TaskDataMiner.Models.TaskInfo)">
+            <summary>
+            Retrieves the list of checks associated with a task.
+            </summary>
+            <param name="taskInfo">The task information object containing details about the task.</param>
+            <returns>A list of <see cref="T:DoneTool.Models.Domain.Checks"/> associated with the task.</returns>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.TaskService.GetChecksForExistingTask(DoneTool.Models.Domain.TaskChecklist)">
+            <summary>
+            Retrieves the checks for an existing task based on its checklist entry.
+            </summary>
+            <param name="taskChecklistEntry">The task checklist entry corresponding to the task.</param>
+            <returns>A list of <see cref="T:DoneTool.Models.Domain.Checks"/> associated with the existing task.</returns>
+        </member>
+        <member name="M:Skyline.DataMiner.TaskDataMiner.Services.TaskService.CreateNewRelationships(Skyline.DataMiner.TaskDataMiner.Models.TaskInfo)">
+            <summary>
+            Creates new relationships between the task and its checks, and returns the associated checks.
+            </summary>
+            <param name="taskInfo">The task information object containing details about the task.</param>
+            <returns>A list of <see cref="T:DoneTool.Models.Domain.Checks"/> associated with the newly created task relationships.</returns>
+        </member>
+    </members>
+</doc>
