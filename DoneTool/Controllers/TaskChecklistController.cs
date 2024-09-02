@@ -1,101 +1,110 @@
-﻿using DoneTool.Data;
-using DoneTool.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿// <copyright file="TaskChecklistController.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace DoneTool.Controllers
 {
+    using AutoMapper;
+    using DoneTool.Models.Domain;
+    using DoneTool.Models.DTO;
+    using DoneTool.Repositories.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskChecklistController"/> class.
+    /// </summary>
+    /// <param name="taskChecklistRepository">The repository to manage task checklists.</param>
+    /// <param name="mapper">The mapper for mapping between domain models and DTOs.</param>
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskChecklistController : ControllerBase
+    public class TaskChecklistController(ITaskChecklistRepository taskChecklistRepository, IMapper mapper)
+        : ControllerBase
     {
-        private readonly DoneToolContext _context;
-
-        public TaskChecklistController(DoneToolContext context)
-        {
-            _context = context;
-        }
-
-
+        /// <summary>
+        /// Gets all task checklists.
+        /// </summary>
+        /// <returns>A list of <see cref="GetTaskChecklistsDTO"/> representing all task checklists.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskChecklist>>> GetTaskChecklists()
+        public async Task<ActionResult<IEnumerable<GetTaskChecklistsDTO>>> GetTaskChecklists()
         {
-            return await _context.TaskChecklist.ToListAsync();
+            var taskChecklists = await taskChecklistRepository.GetAllTaskChecklists();
+            var getTaskChecklistsDTOs = mapper.Map<IEnumerable<GetTaskChecklistsDTO>>(taskChecklists);
+            return this.Ok(getTaskChecklistsDTOs);
         }
 
-
+        /// <summary>
+        /// Gets a specific task checklist by ID.
+        /// </summary>
+        /// <param name="id">The ID of the task checklist.</param>
+        /// <returns>The <see cref="GetTaskChecklistDTO"/> representing the requested task checklist.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskChecklist>> GetTaskChecklist(Guid id)
+        public async Task<ActionResult<GetTaskChecklistDTO>> GetTaskChecklist(Guid id)
         {
-            var taskChecklist = await _context.TaskChecklist.FindAsync(id);
+            var taskChecklist = await taskChecklistRepository.GetTaskChecklistById(id);
 
             if (taskChecklist == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return taskChecklist;
+            var getTaskChecklistDTO = mapper.Map<GetTaskChecklistDTO>(taskChecklist);
+            return this.Ok(getTaskChecklistDTO);
         }
 
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaskChecklist(Guid id, TaskChecklist taskChecklist)
-        {
-            if (id != taskChecklist.ID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(taskChecklist).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TaskChecklistExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-
+        /// <summary>
+        /// Creates a new task checklist.
+        /// </summary>
+        /// <param name="postTaskChecklistDTO">The DTO containing the details of the task checklist to create.</param>
+        /// <returns>The created <see cref="PostTaskChecklistDTO"/> with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<TaskChecklist>> PostTaskChecklist(TaskChecklist taskChecklist)
+        public async Task<ActionResult<PostTaskChecklistDTO>> PostTaskChecklist(PostTaskChecklistDTO postTaskChecklistDTO)
         {
-            _context.TaskChecklist.Add(taskChecklist);
-            await _context.SaveChangesAsync();
+            var taskChecklist = mapper.Map<TaskChecklist>(postTaskChecklistDTO);
+            await taskChecklistRepository.AddTaskChecklist(taskChecklist);
 
-            return CreatedAtAction("GetTaskChecklist", new { id = taskChecklist.ID }, taskChecklist);
+            var createdPostTaskChecklistDTO = mapper.Map<PostTaskChecklistDTO>(taskChecklist);
+            return this.CreatedAtAction(nameof(this.GetTaskChecklist), new { id = taskChecklist.ID }, createdPostTaskChecklistDTO);
         }
 
+        /// <summary>
+        /// Updates an existing task checklist.
+        /// </summary>
+        /// <param name="id">The ID of the task checklist to update.</param>
+        /// <param name="taskChecklistDTO">The DTO containing the updated details of the task checklist.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTaskChecklist(Guid id, PutTaskChecklistDTO taskChecklistDTO)
+        {
+            var existingTaskChecklist = await taskChecklistRepository.GetTaskChecklistById(id);
+            if (existingTaskChecklist == null)
+            {
+                return this.NotFound();
+            }
 
+            mapper.Map(taskChecklistDTO, existingTaskChecklist);
+
+            await taskChecklistRepository.UpdateTaskChecklist(existingTaskChecklist);
+
+            return this.NoContent();
+        }
+
+        /// <summary>
+        /// Deletes a task checklist.
+        /// </summary>
+        /// <param name="id">The ID of the task checklist to delete.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskChecklist(Guid id)
         {
-            var taskChecklist = await _context.TaskChecklist.FindAsync(id);
+            var taskChecklist = await taskChecklistRepository.GetTaskChecklistById(id);
             if (taskChecklist == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            _context.TaskChecklist.Remove(taskChecklist);
-            await _context.SaveChangesAsync();
+            await taskChecklistRepository.DeleteTaskChecklist(id);
 
-            return NoContent();
-        }
-
-        private bool TaskChecklistExists(Guid id)
-        {
-            return _context.TaskChecklist.Any(e => e.ID == id);
+            return this.NoContent();
         }
     }
 }

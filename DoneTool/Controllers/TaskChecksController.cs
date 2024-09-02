@@ -1,96 +1,112 @@
-﻿using DoneTool.Data;
-using DoneTool.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿// <copyright file="TaskChecksController.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace DoneTool.Controllers
 {
+    using AutoMapper;
+    using DoneTool.Models.Domain;
+    using DoneTool.Models.DTO;
+    using DoneTool.Repositories.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskChecksController"/> class.
+    /// </summary>
+    /// <param name="taskChecksRepository">The repository to manage task checks.</param>
+    /// <param name="mapper">The mapper for mapping between domain models and DTOs.</param>
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskChecksController : ControllerBase
+    public class TaskChecksController(ITaskChecksRepository taskChecksRepository, IMapper mapper)
+        : ControllerBase
     {
-        private readonly DoneToolContext _context;
-
-        public TaskChecksController(DoneToolContext context)
-        {
-            _context = context;
-        }
-
+        /// <summary>
+        /// Gets all task checks.
+        /// </summary>
+        /// <returns>A list of <see cref="TaskChecksDTO"/> representing all task checks.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskChecks>>> GetTaskChecks()
+        public async Task<ActionResult<IEnumerable<TaskChecksDTO>>> GetTaskChecks()
         {
-            return await _context.TaskChecks.ToListAsync();
+            var taskChecks = await taskChecksRepository.GetAllTaskChecks();
+            var taskChecksDTO = mapper.Map<IEnumerable<TaskChecksDTO>>(taskChecks);
+            return this.Ok(taskChecksDTO);
         }
 
+        /// <summary>
+        /// Gets a specific task check by ID.
+        /// </summary>
+        /// <param name="id">The ID of the task check.</param>
+        /// <returns>The <see cref="TaskChecksDTO"/> representing the requested task check.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskChecks>> GetTaskCheck(Guid id)
+        public async Task<ActionResult<TaskChecksDTO>> GetTaskCheck(Guid id)
         {
-            var taskCheck = await _context.TaskChecks.FindAsync(id);
+            var taskCheck = await taskChecksRepository.GetTaskCheckById(id);
 
             if (taskCheck == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return taskCheck;
+            var taskCheckDTO = mapper.Map<TaskChecksDTO>(taskCheck);
+            return this.Ok(taskCheckDTO);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaskCheck(Guid id, TaskChecks taskCheck)
-        {
-            if (id != taskCheck.ID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(taskCheck).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TaskCheckExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
+        /// <summary>
+        /// Creates a new task check.
+        /// </summary>
+        /// <param name="taskCheckDTO">The DTO containing the details of the task check to create.</param>
+        /// <returns>The created <see cref="TaskChecksDTO"/> with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<TaskChecks>> PostTaskCheck(TaskChecks taskCheck)
+        public async Task<ActionResult<TaskChecksDTO>> PostTaskCheck(TaskChecksDTO taskCheckDTO)
         {
-            _context.TaskChecks.Add(taskCheck);
-            await _context.SaveChangesAsync();
+            var taskCheck = mapper.Map<TaskChecks>(taskCheckDTO);
+            await taskChecksRepository.AddTaskCheck(taskCheck);
 
-            return CreatedAtAction("GetTempTable", new { id = taskCheck.ID }, taskCheck);
+            var createdTaskCheckDTO = mapper.Map<TaskChecksDTO>(taskCheck);
+            return this.CreatedAtAction(nameof(this.GetTaskCheck), new { id = taskCheck.ID }, createdTaskCheckDTO);
         }
 
+        /// <summary>
+        /// Updates an existing task check.
+        /// </summary>
+        /// <param name="id">The ID of the task check to update.</param>
+        /// <param name="taskCheckDTO">The DTO containing the updated details of the task check.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTaskCheck(Guid id, TaskChecksDTO taskCheckDTO)
+        {
+            var existingTaskCheck = await taskChecksRepository.GetTaskCheckById(id);
+            if (existingTaskCheck == null)
+            {
+                return this.NotFound();
+            }
+
+            existingTaskCheck.Step = taskCheckDTO.Step;
+            existingTaskCheck.TaskType = taskCheckDTO.TaskType;
+            existingTaskCheck.CheckID = taskCheckDTO.CheckID;
+
+            await taskChecksRepository.UpdateTaskCheck(existingTaskCheck);
+
+            return this.NoContent();
+        }
+
+        /// <summary>
+        /// Deletes a task check.
+        /// </summary>
+        /// <param name="id">The ID of the task check to delete.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskCheck(Guid id)
         {
-            var taskCheck = await _context.TaskChecks.FindAsync(id);
+            var taskCheck = await taskChecksRepository.GetTaskCheckById(id);
             if (taskCheck == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            _context.TaskChecks.Remove(taskCheck);
-            await _context.SaveChangesAsync();
+            await taskChecksRepository.DeleteTaskCheck(id);
 
-            return NoContent();
-        }
-
-        private bool TaskCheckExists(Guid id)
-        {
-            return _context.TaskChecks.Any(e => e.ID == id);
+            return this.NoContent();
         }
     }
 }

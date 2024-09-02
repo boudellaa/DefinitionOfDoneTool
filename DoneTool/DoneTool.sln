@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoneTool", "DoneTool.csproj", "{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskLibrary2", "..\TaskLibrary2\TaskLibrary2.csproj", "{CB5E1138-8608-4FF3-9DDE-D93F0CD48F8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskLibrary2", "..\TaskLibrary2\TaskLibrary2.csproj", "{CB5E1138-8608-4FF3-9DDE-D93F0CD48F8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

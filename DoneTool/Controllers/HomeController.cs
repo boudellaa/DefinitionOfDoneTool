@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DoneTool.Data;
-using DoneTool.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DoneTool.Controllers

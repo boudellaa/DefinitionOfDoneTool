@@ -1,96 +1,111 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using DoneTool.Models;
-using DoneTool.Data;
-using Microsoft.EntityFrameworkCore;
-
+﻿// <copyright file="ChecksController.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// <summary>
+//   This file contains the implementation of the ChecksController class.
+// </summary>
 namespace DoneTool.Controllers
 {
+    using AutoMapper;
+    using DoneTool.Models.Domain;
+    using DoneTool.Models.DTO;
+    using DoneTool.Repositories.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChecksController"/> class.
+    /// </summary>
+    /// <param name="checksRepository">The repository to manage checks.</param>
+    /// <param name="mapper">The mapper for mapping between domain models and DTOs.</param>
     [Route("api/[controller]")]
     [ApiController]
-    public class ChecksController : ControllerBase
+    public class ChecksController(IChecksRepository checksRepository, IMapper mapper)
+        : ControllerBase
     {
-        private readonly DoneToolContext _context;
-
-        public ChecksController(DoneToolContext context)
-        {
-            _context = context;
-        }
-
+        /// <summary>
+        /// Gets a list of all checks.
+        /// </summary>
+        /// <returns>A list of <see cref="ChecksDTO"/> representing all checks.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Checks>>> GetChecksItems()
+        public async Task<ActionResult<IEnumerable<ChecksDTO>>> GetChecks()
         {
-            return await _context.Checks.ToListAsync();
+            var checks = await checksRepository.GetAllChecks();
+            var checksDTOs = mapper.Map<IEnumerable<ChecksDTO>>(checks);
+            return this.Ok(checksDTOs);
         }
 
+        /// <summary>
+        /// Gets a specific check by ID.
+        /// </summary>
+        /// <param name="id">The ID of the check to retrieve.</param>
+        /// <returns>The <see cref="ChecksDTO"/> representing the requested check.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Checks>> GetChecksItem(Guid id)
+        public async Task<ActionResult<ChecksDTO>> GetCheck(Guid id)
         {
-            var checksItem = await _context.Checks.FindAsync(id);
+            var check = await checksRepository.GetCheckById(id);
 
-            if (checksItem == null)
+            if (check == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return checksItem;
+            var checkDTO = mapper.Map<ChecksDTO>(check);
+            return this.Ok(checkDTO);
         }
 
+        /// <summary>
+        /// Creates a new check.
+        /// </summary>
+        /// <param name="checkDTO">The DTO containing the data for the new check.</param>
+        /// <returns>The created <see cref="ChecksDTO"/> with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<Checks>> PostChecksItem(Checks checksItem)
+        public async Task<ActionResult<ChecksDTO>> PostCheck(ChecksDTO checkDTO)
         {
-            _context.Checks.Add(checksItem);
-            await _context.SaveChangesAsync();
+            var check = mapper.Map<Checks>(checkDTO);
+            await checksRepository.AddCheck(check);
 
-            return CreatedAtAction("GetChecksItem", new { id = checksItem.ID }, checksItem);
+            var createdCheckDTO = mapper.Map<ChecksDTO>(check);
+            return this.CreatedAtAction(nameof(this.GetCheck), new { id = check.ID }, createdCheckDTO);
         }
 
+        /// <summary>
+        /// Updates an existing check.
+        /// </summary>
+        /// <param name="id">The ID of the check to update.</param>
+        /// <param name="checkDTO">The DTO containing the updated data for the check.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutChecksItem(Guid id, Checks checksItem)
+        public async Task<IActionResult> PutCheck(Guid id, ChecksDTO checkDTO)
         {
-            if (id != checksItem.ID)
+            var existingCheck = await checksRepository.GetCheckById(id);
+            if (existingCheck == null)
             {
-                return BadRequest();
+                return this.NotFound();
             }
 
-            _context.Entry(checksItem).State = EntityState.Modified;
+            existingCheck.Item = checkDTO.Item;
+            await checksRepository.UpdateCheck(existingCheck);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ChecksItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return this.NoContent();
         }
 
+        /// <summary>
+        /// Deletes a specific check by ID.
+        /// </summary>
+        /// <param name="id">The ID of the check to delete.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteChecksItem(Guid id)
+        public async Task<IActionResult> DeleteCheck(Guid id)
         {
-            var checksItem = await _context.Checks.FindAsync(id);
-            if (checksItem == null)
+            var check = await checksRepository.GetCheckById(id);
+            if (check == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            _context.Checks.Remove(checksItem);
-            await _context.SaveChangesAsync();
+            await checksRepository.DeleteCheck(id);
 
-            return NoContent();
-        }
-
-        private bool ChecksItemExists(Guid id)
-        {
-            return _context.Checks.Any(e => e.ID == id);
+            return this.NoContent();
         }
     }
 }

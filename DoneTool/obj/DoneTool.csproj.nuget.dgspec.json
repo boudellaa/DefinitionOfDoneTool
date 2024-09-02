@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\AliBO\\source\\repos\\DoneTool\\DoneTool.csproj": {}
+    "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\DoneTool.csproj": {}
   },
   "projects": {
-    "C:\\Users\\AliBO\\source\\repos\\DoneTool\\DoneTool.csproj": {
+    "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\DoneTool.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\AliBO\\source\\repos\\DoneTool\\DoneTool.csproj",
+        "projectUniqueName": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\DoneTool.csproj",
         "projectName": "DoneTool",
-        "projectPath": "C:\\Users\\AliBO\\source\\repos\\DoneTool\\DoneTool.csproj",
+        "projectPath": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\DoneTool.csproj",
         "packagesPath": "C:\\Users\\AliBO\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\AliBO\\source\\repos\\DoneTool\\obj\\",
+        "outputPath": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -50,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.8, )"
@@ -69,6 +73,12 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.8, )"
+            },
+            "StyleCop.Analyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.118, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

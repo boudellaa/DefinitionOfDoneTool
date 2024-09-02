@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "DoneTool.Controllers.ChecksController",
-    "Method": "GetChecksItems",
+    "Method": "GetChecks",
     "RelativePath": "api/Checks",
     "HttpMethod": "GET",
     "IsController": true,
@@ -9,7 +9,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DoneTool.Models.Checks, DoneTool, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DoneTool.Models.DTO.ChecksDTO, DoneTool, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -21,21 +21,21 @@
   },
   {
     "ContainingType": "DoneTool.Controllers.ChecksController",
-    "Method": "PostChecksItem",
+    "Method": "PostCheck",
     "RelativePath": "api/Checks",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "checksItem",
-        "Type": "DoneTool.Models.Checks",
+        "Name": "checkDTO",
+        "Type": "DoneTool.Models.DTO.ChecksDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "DoneTool.Models.Checks",
+        "Type": "DoneTool.Models.DTO.ChecksDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -47,7 +47,7 @@
   },
   {
     "ContainingType": "DoneTool.Controllers.ChecksController",
-    "Method": "GetChecksItem",
+    "Method": "GetCheck",
     "RelativePath": "api/Checks/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -61,7 +61,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "DoneTool.Models.Checks",
+        "Type": "DoneTool.Models.DTO.ChecksDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -73,7 +73,7 @@
   },
   {
     "ContainingType": "DoneTool.Controllers.ChecksController",
-    "Method": "PutChecksItem",
+    "Method": "PutCheck",
     "RelativePath": "api/Checks/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
@@ -85,8 +85,8 @@
         "IsRequired": true
       },
       {
-        "Name": "checksItem",
-        "Type": "DoneTool.Models.Checks",
+        "Name": "checkDTO",
+        "Type": "DoneTool.Models.DTO.ChecksDTO",
         "IsRequired": true
       }
     ],
@@ -94,7 +94,7 @@
   },
   {
     "ContainingType": "DoneTool.Controllers.ChecksController",
-    "Method": "DeleteChecksItem",
+    "Method": "DeleteCheck",
     "RelativePath": "api/Checks/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
@@ -118,7 +118,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DoneTool.Models.TaskChecklist, DoneTool, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DoneTool.Models.DTO.GetTaskChecklistsDTO, DoneTool, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -137,14 +137,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "taskChecklist",
-        "Type": "DoneTool.Models.TaskChecklist",
+        "Name": "postTaskChecklistDTO",
+        "Type": "DoneTool.Models.DTO.PostTaskChecklistDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "DoneTool.Models.TaskChecklist",
+        "Type": "DoneTool.Models.DTO.PostTaskChecklistDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -170,7 +170,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "DoneTool.Models.TaskChecklist",
+        "Type": "DoneTool.Models.DTO.GetTaskChecklistDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -194,8 +194,8 @@
         "IsRequired": true
       },
       {
-        "Name": "taskChecklist",
-        "Type": "DoneTool.Models.TaskChecklist",
+        "Name": "taskChecklistDTO",
+        "Type": "DoneTool.Models.DTO.PutTaskChecklistDTO",
         "IsRequired": true
       }
     ],
@@ -227,7 +227,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DoneTool.Models.TaskChecks, DoneTool, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DoneTool.Models.DTO.TaskChecksDTO, DoneTool, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -246,14 +246,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "taskCheck",
-        "Type": "DoneTool.Models.TaskChecks",
+        "Name": "taskCheckDTO",
+        "Type": "DoneTool.Models.DTO.TaskChecksDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "DoneTool.Models.TaskChecks",
+        "Type": "DoneTool.Models.DTO.TaskChecksDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -279,7 +279,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "DoneTool.Models.TaskChecks",
+        "Type": "DoneTool.Models.DTO.TaskChecksDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -303,8 +303,8 @@
         "IsRequired": true
       },
       {
-        "Name": "taskCheck",
-        "Type": "DoneTool.Models.TaskChecks",
+        "Name": "taskCheckDTO",
+        "Type": "DoneTool.Models.DTO.TaskChecksDTO",
         "IsRequired": true
       }
     ],

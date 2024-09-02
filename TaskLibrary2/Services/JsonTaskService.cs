@@ -1,89 +1,65 @@
-﻿using System.Text.Json;
-using TaskLibrary.Models;
-using DoneTool.Models;
-using DoneTool.Data;
+﻿// <copyright file="JsonTaskService.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
-namespace TaskLibrary.Services
+namespace TaskLibrary2.Services
 {
-    public class JsonTaskService
+    using System.Text.Json;
+    using Microsoft.Extensions.Logging;
+    using TaskLibrary2.Models;
+
+    /// <summary>
+    /// Provides methods to read and write task information to and from JSON files.
+    /// This class utilizes a primary constructor to inject dependencies.
+    /// </summary>
+    /// <param name="logger">The logger instance used to log messages and errors.</param>
+    public class JsonTaskService(ILogger<JsonTaskService> logger)
     {
-        private readonly DoneToolContext _context;
+        private readonly ILogger<JsonTaskService> logger = logger;
 
-        public JsonTaskService(DoneToolContext context)
-        {
-            _context = context;
-        }
-
-        public TaskInfo ReadTaskFromJson(string filePath)
+        /// <summary>
+        /// Reads the task information from a JSON file.
+        /// </summary>
+        /// <param name="filePath">The path to the JSON file containing the task information.</param>
+        /// <returns>The deserialized <see cref="TaskInfo"/> object from the JSON file, or <c>null</c> if deserialization fails.</returns>
+        public TaskInfo? ReadTaskFromJson(string filePath)
         {
             var jsonString = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<TaskInfo>(jsonString);
+
+            if (string.IsNullOrEmpty(jsonString))
+            {
+                this.logger.LogError($"The file at {filePath} is empty or could not be read.");
+                return null;
+            }
+
+            try
+            {
+                return JsonSerializer.Deserialize<TaskInfo>(jsonString);
+            }
+            catch (JsonException ex)
+            {
+                this.logger.LogError(ex, $"Failed to deserialize JSON from file at {filePath}. The file content might be malformed.");
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Writes the task information to a JSON file.
+        /// </summary>
+        /// <param name="taskInfo">The <see cref="TaskInfo"/> object containing the task information to be serialized.</param>
+        /// <param name="filePath">The path to the JSON file where the task information will be saved.</param>
         public void WriteTaskToJson(TaskInfo taskInfo, string filePath)
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            var jsonString = JsonSerializer.Serialize(taskInfo, options);
-            File.WriteAllText(filePath, jsonString);
-        }
-
-        public List<Checks> GetChecksForTask(TaskInfo taskInfo)
-        {
-            var taskChecklistEntry = _context.TaskChecklist.FirstOrDefault(tc => tc.TaskID == taskInfo.TaskID);
-
-            if (taskChecklistEntry != null)
+            try
             {
-                return GetChecksForExistingTask(taskChecklistEntry);
+                JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+                var jsonString = JsonSerializer.Serialize(taskInfo, options);
+                File.WriteAllText(filePath, jsonString);
             }
-            else
+            catch (Exception ex)
             {
-                return CreateNewRelationships(taskInfo);
+                this.logger.LogError(ex, $"Failed to write JSON to file at {filePath}. Please check if the file path is correct and accessible.");
             }
-        }
-
-        private List<Checks> GetChecksForExistingTask(TaskChecklist taskChecklistEntry)
-        {
-            var taskChecksIDs = _context.TaskChecklist
-                .Where(tc => tc.TaskID == taskChecklistEntry.TaskID)
-                .Select(tc => tc.TaskChecksID)
-                .ToList();
-
-            var checkIDs = taskChecksIDs.Select(id => _context.TaskChecks
-                .Where(c => c.ID == id)
-                .Select(c => c.CheckID)
-                .FirstOrDefault())
-                .Where(checkID => checkID != Guid.Empty)
-                .ToList();
-
-            return _context.Checks
-                .Where(c => checkIDs.Contains(c.ID))
-                .ToList();
-        }
-
-        private List<Checks> CreateNewRelationships(TaskInfo taskInfo)
-        {
-            var taskChecksIDs = _context.TaskChecks
-                .Where(tc => tc.TaskType == taskInfo.TaskType)
-                .Select(tc => tc.ID)
-                .ToList();
-
-            foreach (var taskChecksID in taskChecksIDs)
-            {
-                var newTaskChecklistEntry = new TaskChecklist
-                {
-                    ID = Guid.NewGuid(),
-                    TaskID = taskInfo.TaskID,
-                    TaskChecksID = taskChecksID,
-                    Status = DoneTool.Models.TaskStatus.TODO,
-                    Guard = taskInfo.Guard
-                };
-
-                _context.TaskChecklist.Add(newTaskChecklistEntry);
-            }
-
-            _context.SaveChanges();
-
-            return GetChecksForExistingTask(_context.TaskChecklist.FirstOrDefault(tc => tc.TaskID == taskInfo.TaskID));
         }
     }
 }

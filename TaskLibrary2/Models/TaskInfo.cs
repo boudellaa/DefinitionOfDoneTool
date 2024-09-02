@@ -1,26 +1,37 @@
-﻿using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿// <copyright file="TaskInfo.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
-namespace TaskLibrary.Models
+namespace TaskLibrary2.Models
 {
+    /// <summary>
+    /// Represents the information about a task, including its ID, title, type, developer, and guard.
+    /// </summary>
     public class TaskInfo
     {
-        [JsonPropertyName("TaskID")]
+        /// <summary>
+        /// Gets or sets the unique identifier for the task.
+        /// </summary>
         public int TaskID { get; set; }
 
-        [JsonPropertyName("TaskTitle")]
-        public string TaskTitle { get; set; }
+        /// <summary>
+        /// Gets or sets the title or name of the task.
+        /// </summary>
+        public string TaskTitle { get; set; } = string.Empty;
 
-        [JsonPropertyName("TaskType")]
-        public string TaskType { get; set; }
+        /// <summary>
+        /// Gets or sets the type or category of the task.
+        /// </summary>
+        public string TaskType { get; set; } = string.Empty;
 
-        [JsonPropertyName("Developer")]
-        public string Developer { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the developer assigned to the task.
+        /// </summary>
+        public string Developer { get; set; } = string.Empty;
 
-        [JsonPropertyName("Guard")]
-        public string Guard { get; set; }
-
+        /// <summary>
+        /// Gets or sets the name of the guard responsible for the task.
+        /// </summary>
+        public string Guard { get; set; } = string.Empty;
     }
 }
-

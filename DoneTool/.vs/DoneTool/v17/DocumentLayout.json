@@ -1,68 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\AliBO\\source\\repos\\DoneTool\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{CB5E1138-8608-4FF3-9DDE-D93F0CD48F8F}|..\\TaskLibrary2\\TaskLibrary2.csproj|c:\\users\\alibo\\source\\repos\\tasklibrary2\\services\\jsontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CB5E1138-8608-4FF3-9DDE-D93F0CD48F8F}|..\\TaskLibrary2\\TaskLibrary2.csproj|c:\\users\\alibo\\source\\repos\\tasklibrary2\\models\\taskinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CB5E1138-8608-4FF3-9DDE-D93F0CD48F8F}|..\\TaskLibrary2\\TaskLibrary2.csproj|c:\\users\\alibo\\source\\repos\\tasklibrary2\\data\\task.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 237,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "JsonTaskService.cs",
-              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\TaskLibrary2\\Services\\JsonTaskService.cs",
-              "RelativeDocumentMoniker": "..\\TaskLibrary2\\Services\\JsonTaskService.cs",
-              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\TaskLibrary2\\Services\\JsonTaskService.cs",
-              "RelativeToolTip": "..\\TaskLibrary2\\Services\\JsonTaskService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-30T09:27:51.042Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TaskInfo.cs",
-              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\TaskLibrary2\\Models\\TaskInfo.cs",
-              "RelativeDocumentMoniker": "..\\TaskLibrary2\\Models\\TaskInfo.cs",
-              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\TaskLibrary2\\Models\\TaskInfo.cs",
-              "RelativeToolTip": "..\\TaskLibrary2\\Models\\TaskInfo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-30T09:27:49.331Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "task.json",
-              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\TaskLibrary2\\Data\\task.json",
-              "RelativeDocumentMoniker": "..\\TaskLibrary2\\Data\\task.json",
-              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\TaskLibrary2\\Data\\task.json",
-              "RelativeToolTip": "..\\TaskLibrary2\\Data\\task.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-08-30T09:27:46.54Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
