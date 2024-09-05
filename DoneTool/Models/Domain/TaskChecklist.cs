@@ -4,7 +4,6 @@
 
 namespace DoneTool.Models.Domain
 {
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
@@ -42,10 +41,5 @@ namespace DoneTool.Models.Domain
         /// Gets or sets the identifier for the associated task checks.
         /// </summary>
         public Guid TaskChecksID { get; set; }
-
-        public static implicit operator List<object>(TaskChecklist v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

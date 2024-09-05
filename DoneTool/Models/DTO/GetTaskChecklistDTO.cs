@@ -10,5 +10,9 @@ namespace DoneTool.Models.DTO
     /// </summary>
     public class GetTaskChecklistDTO : BaseTaskChecklistDTO
     {
+        /// <summary>
+        /// Gets or sets the guard assigned to the task checklist.
+        /// </summary>
+        public string Guard { get; set; } = string.Empty;
     }
 }

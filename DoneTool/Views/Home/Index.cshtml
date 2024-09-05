@@ -1,35 +1,49 @@
-﻿@model List<string>
+﻿@model DoneTool.Models.ViewModels.PageModel
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TASK 1 - Definition of Done Tool</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-</head>
-<body>
-    <div class="container">
-        <h1 class="mt-4">TASK 1</h1>
+<link rel="stylesheet" href="~/css/taskLayout.css">
 
-        <div class="mt-4">
-            <h2>Checklist</h2>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Checklist Items</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+<div class="header-section">
+    <div class="header-content">
+        <h1 class="task-title">@Model.TaskTitle</h1>
+        <p class="developer-name">@Model.DeveloperName</p>
     </div>
-</body>
-</html>
+</div>
+
+<div class="task-checklist">
+    <table class="table">
+        <thead>
+            <tr class="header-row">
+                <th>Subtasks</th>
+                <th>Status</th>
+                <th>Guard</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model.Checks)
+            {
+                <tr data-taskcheklist-id="@task.ID">
+                    <td>@task.Subtask</td>
+                    <td>
+                        <div class="custom-dropdown">
+                            <button class="dropdown-toggle">@task.SelectedStatus</button>
+                            <ul class="dropdown-menu">
+                                <li class="status-todo" data-value="TODO">TODO</li>
+                                <li class="status-skipped" data-value="SKIPPED">SKIPPED</li>
+                                <li class="status-done" data-value="DONE">DONE</li>
+                            </ul>
+                            <input type="hidden" name="status" class="form-control status-dropdown" value="@task.SelectedStatus">
+                        </div>
+                    </td>
+                    <td id="guard-name">@task.Guard</td>
+                    <td>
+                        <textarea asp-for="@task.Comment" class="form-control" placeholder="Enter your comment (max. 80 characters)" maxlength="80">@task.Comment</textarea>
+                        <div class="char-count"></div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/js/taskManager.js"></script>

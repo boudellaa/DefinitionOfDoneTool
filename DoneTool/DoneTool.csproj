@@ -30,4 +30,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JsonNuGeT\Utils.JsonOps\Utils.JsonOps.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -13,9 +13,11 @@
           "Microsoft.EntityFrameworkCore.Design": "8.0.8",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.8",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
+          "Skyline.DataMiner.Utils.JsonOps": "1.0.1",
           "StyleCop.Analyzers": "1.1.118",
           "Swashbuckle.AspNetCore": "6.7.3",
-          "System.Text.Json": "8.0.4"
+          "System.Text.Json": "8.0.4",
+          "Skyline.DataMiner.Utils.JsonOps.Reference": "1.0.1.0"
         },
         "runtime": {
           "DoneTool.dll": {}
@@ -920,6 +922,26 @@
             "fileVersion": "6.0.21.52210"
           }
         }
+      },
+      "Skyline.DataMiner.Utils.JsonOps/1.0.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "8.0.0",
+          "System.Text.Json": "8.0.4"
+        },
+        "runtime": {
+          "Skyline.DataMiner.Utils.JsonOps.dll": {
+            "assemblyVersion": "1.0.1",
+            "fileVersion": ""
+          }
+        }
+      },
+      "Skyline.DataMiner.Utils.JsonOps.Reference/1.0.1.0": {
+        "runtime": {
+          "Skyline.DataMiner.Utils.JsonOps.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
       }
     }
   },
@@ -1516,6 +1538,16 @@
       "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
       "path": "system.windows.extensions/6.0.0",
       "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
+    },
+    "Skyline.DataMiner.Utils.JsonOps/1.0.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Skyline.DataMiner.Utils.JsonOps.Reference/1.0.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

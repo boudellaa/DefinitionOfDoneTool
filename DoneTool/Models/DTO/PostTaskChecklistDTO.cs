@@ -19,5 +19,10 @@ namespace DoneTool.Models.DTO
         /// Gets or sets the unique identifier of the TaskChecks associated with the checklist.
         /// </summary>
         public Guid TaskChecksID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the guard assigned to the task checklist.
+        /// </summary>
+        public string Guard { get; set; } = string.Empty;
     }
 }

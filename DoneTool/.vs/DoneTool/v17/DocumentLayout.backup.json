@@ -3,10 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{01D7CB28-5036-4735-A26F-5F4B5AFECB56}|..\\TaskDataMiner\\Utils.NAME\\TaskDataMiner.csproj|c:\\users\\alibo\\source\\repos\\ddt\\taskdataminer\\utils.name\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{01D7CB28-5036-4735-A26F-5F4B5AFECB56}|..\\TaskDataMiner\\Utils.NAME\\TaskDataMiner.csproj|c:\\users\\alibo\\source\\repos\\ddt\\taskdataminer\\utils.name\\services\\jsontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\models\\viewmodels\\taskviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:models\\viewmodels\\taskviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\models\\viewmodels\\pagemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:models\\viewmodels\\pagemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\models\\dto\\checkwithchecklistid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:models\\dto\\checkwithchecklistid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,26 +36,65 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "TaskService.cs",
-              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
-              "RelativeDocumentMoniker": "..\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
-              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
-              "RelativeToolTip": "..\\TaskDataMiner\\Utils.NAME\\Services\\TaskService.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAAgwFEAAAAkAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Services\\TaskService.cs",
+              "RelativeDocumentMoniker": "Services\\TaskService.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Services\\TaskService.cs*",
+              "RelativeToolTip": "Services\\TaskService.cs*",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAADUAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-02T09:51:03.195Z",
+              "WhenOpened": "2024-09-05T06:55:34.534Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "JsonTaskService.cs",
-              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
-              "RelativeDocumentMoniker": "..\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
-              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
-              "RelativeToolTip": "..\\TaskDataMiner\\Utils.NAME\\Services\\JsonTaskService.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Title": "TaskViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\ViewModels\\TaskViewModel.cs",
+              "RelativeDocumentMoniker": "Models\\ViewModels\\TaskViewModel.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\ViewModels\\TaskViewModel.cs",
+              "RelativeToolTip": "Models\\ViewModels\\TaskViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-02T09:50:58.551Z",
+              "WhenOpened": "2024-09-05T06:54:41.17Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PageModel.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\ViewModels\\PageModel.cs",
+              "RelativeDocumentMoniker": "Models\\ViewModels\\PageModel.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\ViewModels\\PageModel.cs",
+              "RelativeToolTip": "Models\\ViewModels\\PageModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-05T06:54:39.423Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CheckWithChecklistID.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\DTO\\CheckWithChecklistID.cs",
+              "RelativeDocumentMoniker": "Models\\DTO\\CheckWithChecklistID.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\DTO\\CheckWithChecklistID.cs",
+              "RelativeToolTip": "Models\\DTO\\CheckWithChecklistID.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-05T06:51:14.705Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-05T06:50:13.689Z",
               "EditorCaption": ""
             }
           ]

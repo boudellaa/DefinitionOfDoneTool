@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2vqAC961oXrYHxrtuGu9dKa1puuIQb1XobBMtZOA6jY=",
+  "Hash": "gkw4buUKRPfO4kBkEixOUcQmBWNGB1/MltcxKzCDE2U=",
   "Source": "DoneTool",
   "BasePath": "_content/DoneTool",
   "Mode": "Default",
@@ -74,6 +74,25 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
+      "Identity": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\css\\taskLayout.css",
+      "SourceId": "DoneTool",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\",
+      "BasePath": "_content/DoneTool",
+      "RelativePath": "css/taskLayout.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\taskLayout.css"
+    },
+    {
       "Identity": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\favicon.ico",
       "SourceId": "DoneTool",
       "SourceType": "Discovered",
@@ -110,6 +129,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\js\\taskManager.js",
+      "SourceId": "DoneTool",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\",
+      "BasePath": "_content/DoneTool",
+      "RelativePath": "js/taskManager.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\taskManager.js"
     },
     {
       "Identity": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",

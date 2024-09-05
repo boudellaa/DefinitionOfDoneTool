@@ -9,12 +9,20 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\css\\taskLayout.css",
+      "PackagePath": "staticwebassets\\css\\taskLayout.css"
+    },
+    {
       "Id": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
       "Id": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\js\\taskManager.js",
+      "PackagePath": "staticwebassets\\js\\taskManager.js"
     },
     {
       "Id": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\wwwroot\\lib\\bootstrap\\LICENSE",

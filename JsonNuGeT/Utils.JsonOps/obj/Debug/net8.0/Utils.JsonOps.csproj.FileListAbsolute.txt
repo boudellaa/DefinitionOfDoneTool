@@ -1,0 +1,15 @@
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.deps.json
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.dll
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.pdb
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.xml
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Utils.JsonOps.csproj.AssemblyReference.cache
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Utils.JsonOps.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Utils.JsonOps.AssemblyInfoInputs.cache
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Utils.JsonOps.AssemblyInfo.cs
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Utils.JsonOps.csproj.CoreCompileInputs.cache
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Utils.JsonOps.sourcelink.json
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.dll
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\refint\Skyline.DataMiner.Utils.JsonOps.dll
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.xml
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.pdb
+C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\obj\Debug\net8.0\ref\Skyline.DataMiner.Utils.JsonOps.dll

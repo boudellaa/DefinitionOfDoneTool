@@ -149,3 +149,6 @@ C:\Users\AliBO\source\repos\DDT\DoneTool\obj\Debug\net8.0\refint\DoneTool.dll
 C:\Users\AliBO\source\repos\DDT\DoneTool\obj\Debug\net8.0\DoneTool.pdb
 C:\Users\AliBO\source\repos\DDT\DoneTool\obj\Debug\net8.0\DoneTool.genruntimeconfig.cache
 C:\Users\AliBO\source\repos\DDT\DoneTool\obj\Debug\net8.0\ref\DoneTool.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.pdb
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.xml

@@ -19,10 +19,5 @@ namespace DoneTool.Models.DTO
         /// Gets or sets the comment associated with the task checklist.
         /// </summary>
         public string? Comment { get; set; }
-
-        /// <summary>
-        /// Gets or sets the guard assigned to the task checklist.
-        /// </summary>
-        public string Guard { get; set; } = string.Empty;
     }
 }

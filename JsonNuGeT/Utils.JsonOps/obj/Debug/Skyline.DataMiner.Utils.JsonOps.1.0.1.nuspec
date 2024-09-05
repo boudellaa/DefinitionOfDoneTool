@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Skyline.DataMiner.Utils.JsonOps</id>
+    <version>1.0.1</version>
+    <authors>SkylineCommunications</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>Icon.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://skyline.be/</projectUrl>
+    <description>Package Description</description>
+    <tags>Skyline DataMiner</tags>
+    <repository type="git" commit="40b1e7abdfb6dbf8f810ad8e311d78bcafcbf2e2" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="Microsoft.Extensions.Logging" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="8.0.4" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.dll" target="lib\net8.0\Skyline.DataMiner.Utils.JsonOps.dll" />
+    <file src="C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.xml" target="lib\net8.0\Skyline.DataMiner.Utils.JsonOps.xml" />
+    <file src="C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\README.md" target="README.md" />
+    <file src="C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\LICENSE.txt" target="LICENSE.txt" />
+    <file src="C:\Users\AliBO\source\repos\DDT\JsonNuGeT\Utils.JsonOps\nuget\Icon.png" target="Icon.png" />
+  </files>
+</package>

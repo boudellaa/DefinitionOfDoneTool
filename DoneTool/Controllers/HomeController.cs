@@ -1,32 +1,63 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using DoneTool.Data;
-using Microsoft.EntityFrameworkCore;
+﻿// <copyright file="HomeController.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace DoneTool.Controllers
 {
+    using DoneTool.Data;
+    using DoneTool.Models.ViewModels;
+    using DoneTool.Services;
+    using Microsoft.AspNetCore.Mvc;
+    using Skyline.DataMiner.Utils.JsonOps.Services;
+
     public class HomeController : Controller
     {
-        private readonly DoneToolContext _context;
+        private readonly JsonTaskService jsonTaskService;
+        private readonly TaskService taskService;
+        private readonly DoneToolContext context;
 
-        public HomeController(DoneToolContext context)
+        public HomeController(JsonTaskService jsonTaskService, TaskService taskService, DoneToolContext context)
         {
-            _context = context;
+            this.jsonTaskService = jsonTaskService;
+            this.taskService = taskService;
+            this.context = context;
         }
 
-        public async Task<IActionResult> Index(Guid id)
+        [HttpGet]
+        public IActionResult Index()
         {
-            var checksItem = await _context.Checks
-                                              .Where(ci => ci.ID == id)
-                                              .Select(ci => ci.Item)
-                                              .ToListAsync();
+            string jsonFilePath = "../JsonNuGeT/Utils.JsonOps/Data/task.json";
 
-            if (checksItem == null || !checksItem.Any())
+            var taskInfo = this.jsonTaskService.ReadTaskFromJson(jsonFilePath);
+
+            if (taskInfo == null)
             {
-                return NotFound(); 
+                return this.NotFound("Task information could not be loaded from the JSON file.");
             }
 
-            return View(checksItem);
+            var checksWithTaskChecklist = this.taskService.GetChecksForTask(taskInfo);
+
+            var viewModel = new PageModel
+            {
+                TaskTitle = taskInfo.TaskTitle,
+                DeveloperName = taskInfo.Developer,
+                Checks = checksWithTaskChecklist.Select(cwtc => new TaskViewModel
+                {
+                    ID = cwtc.TaskChecklistID,
+                    Subtask = cwtc.Check.Item,
+                    SelectedStatus = this.context.TaskChecklist
+                                       .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                       .Select(tc => tc.Status.ToString())
+                                       .FirstOrDefault() ?? "TODO",
+                    Comment = this.context.TaskChecklist
+                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                  .Select(tc => tc.Comment)
+                                  .FirstOrDefault() ?? string.Empty,
+                    Guard = taskInfo.Guard,
+                }).ToList(),
+            };
+
+            return this.View(viewModel);
         }
     }
-
 }

@@ -8,8 +8,10 @@ using DoneTool.Data;
 using DoneTool.Mappings;
 using DoneTool.Repositories.Interfaces;
 using DoneTool.Repositories.SQL;
+using DoneTool.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Skyline.DataMiner.Utils.JsonOps.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,8 @@ builder.Services.AddDbContext<DoneToolContext>(options =>
 builder.Services.AddScoped<IChecksRepository, SQLChecksRepository>();
 builder.Services.AddScoped<ITaskChecklistRepository, SQLTaskChecklistRepository>();
 builder.Services.AddScoped<ITaskChecksRepository, SQLTaskChecksRepository>();
+builder.Services.AddScoped<JsonTaskService>();
+builder.Services.AddScoped<TaskService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

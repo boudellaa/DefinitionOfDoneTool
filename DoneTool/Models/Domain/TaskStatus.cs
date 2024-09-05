@@ -12,16 +12,16 @@ namespace DoneTool.Models.Domain
         /// <summary>
         /// The task is yet to be done.
         /// </summary>
-        TODO,
+        TODO = 0,
 
         /// <summary>
         /// The task was skipped.
         /// </summary>
-        SKIPPED,
+        SKIPPED = 1,
 
         /// <summary>
         /// The task is completed.
         /// </summary>
-        DONE,
+        DONE = 2,
     }
 }
