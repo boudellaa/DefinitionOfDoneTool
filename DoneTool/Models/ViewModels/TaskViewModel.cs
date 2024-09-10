@@ -9,10 +9,10 @@ namespace DoneTool.Models.ViewModels
     public class TaskViewModel
     {
         public Guid ID { get; set; }
-        public string Subtask { get; set; }
+        public string Step { get; set; }
         public string SelectedStatus { get; set; }
         public string Guard { get; set; }
         public string Comment { get; set; }
-
+        public DateTime LastUpdated { get; set; }
     }
 }

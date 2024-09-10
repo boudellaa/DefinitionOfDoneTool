@@ -10,5 +10,6 @@ namespace DoneTool.Models.DTO
     /// </summary>
     public class PutTaskChecklistDTO : BaseTaskChecklistDTO
     {
+        public DateTime LastUpdated { get; set; }
     }
 }

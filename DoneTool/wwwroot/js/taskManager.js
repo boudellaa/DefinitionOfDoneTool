@@ -1,142 +1,207 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
     const dropdowns = document.querySelectorAll('.custom-dropdown');
-    const textareas = document.querySelectorAll('textarea.form-control');
+    const modal = document.getElementById("commentModal");
+    const closeBtn = document.querySelector(".close");
+    const modalTextarea = document.getElementById('skipComment');
+    let activeRow;
 
-    if (dropdowns.length > 0) {
-        initializeDropdowns(dropdowns);
-    } else {
-        console.warn('No dropdowns found on the page.');
+    closeBtn.onclick = function () {
+        modal.style.display = "none";
     }
 
-    if (textareas.length > 0) {
-        initializeTextareas(textareas);
-    } else {
-        console.warn('No textareas found on the page.');
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
 
-    function initializeDropdowns(dropdowns) {
-        dropdowns.forEach(function (dropdown) {
-            const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
-            const dropdownMenu = dropdown.querySelector('.dropdown-menu');
-            const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+    dropdowns.forEach(function (dropdown) {
+        const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+        const statusButton = dropdown.querySelector('.status-button');
+        const arrowButton = dropdown.querySelector('.arrow-button');
+        const hiddenInput = dropdown.querySelector('input[type="hidden"]');
 
-            if (!dropdownToggle || !dropdownMenu || !hiddenInput) {
-                console.warn('Dropdown elements are missing in the DOM.');
+        dropdownMenu.querySelectorAll('li').forEach(function (item) {
+            item.addEventListener('click', function () {
+                const statusValue = this.getAttribute('data-value');
+
+                if (statusValue === 'SKIPPED') {
+                    activeRow = dropdown.closest('tr');
+                    modal.style.display = "block";
+                } else {
+                    hiddenInput.value = statusValue;
+                    statusButton.textContent = statusValue;
+                    statusButton.className = 'status-button status-' + statusValue.toLowerCase();
+                    arrowButton.className = 'arrow-button status-' + statusValue.toLowerCase();
+
+                    dropdownMenu.style.display = 'none';
+                    saveTaskUpdate(dropdown.closest('tr'));
+                }
+            });
+        });
+    });
+
+    document.getElementById('submitSkip').onclick = function () {
+        const comment = modalTextarea.value;
+
+        if (comment.length < 10) {
+            alert('Please enter at least 10 characters for the comment.');
+            return;
+        }
+
+        const dropdown = activeRow.querySelector('.custom-dropdown');
+        const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+        const statusButton = dropdown.querySelector('.status-button');
+        const arrowButton = dropdown.querySelector('.arrow-button');
+
+        hiddenInput.value = "SKIPPED";
+        statusButton.textContent = "SKIPPED";
+        statusButton.className = 'status-button status-skipped';
+
+        arrowButton.className = 'arrow-button status-skipped';
+
+        const commentField = activeRow.querySelector('textarea');
+        commentField.value = comment;
+
+        modal.style.display = "none";
+        modalTextarea.value = '';
+
+        saveTaskUpdate(activeRow);
+    };
+
+    const textareas = document.querySelectorAll('tbody textarea');
+    textareas.forEach(function (textarea) {
+        const rowElement = textarea.closest('tr');
+        const debouncedSaveTaskUpdate = debounce(function () {
+            if (rowElement) {
+                saveTaskUpdate(rowElement);
+            } else {
+                console.error("No row element found for textarea update. Textarea content:", textarea.value);
+            }
+        }, 2000);
+
+        textarea.addEventListener('input', function () {
+            debouncedSaveTaskUpdate();
+        });
+    });
+
+    function debounce(func, delay) {
+        let timeout;
+        return function () {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
+    const customReloadModal = document.getElementById('customReloadModal');
+    if (customReloadModal) {
+        customReloadModal.style.display = 'none';
+    }
+});
+
+function toggleStatus(button) {
+    const dropdown = button.closest('.custom-dropdown');
+    const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+    const statusButton = dropdown.querySelector('.status-button');
+    const arrowButton = dropdown.querySelector('.arrow-button');
+    const currentStatus = hiddenInput.value;
+
+    if (currentStatus !== "DONE") {
+        hiddenInput.value = "DONE";
+        statusButton.textContent = "DONE";
+        statusButton.classList.remove('status-todo', 'status-skipped');
+        statusButton.classList.add('status-done');
+
+        arrowButton.classList.remove('status-todo', 'status-skipped');
+        arrowButton.classList.add('status-done');
+
+        saveTaskUpdate(dropdown.closest('tr'));
+    }
+}
+
+function toggleDropdownMenu(button) {
+    const dropdownMenu = button.closest('.custom-dropdown').querySelector('.dropdown-menu');
+    const dropdown = button.closest('.custom-dropdown');
+    const statusButton = dropdown.querySelector('.status-button');
+    const arrowButton = button;
+
+    arrowButton.className = statusButton.className.replace('status-button', 'arrow-button');
+
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+}
+
+function saveTaskUpdate(rowElement) {
+    if (!rowElement) {
+        console.error('saveTaskUpdate called with null rowElement');
+        return;
+    }
+
+    const taskChecklistId = rowElement.getAttribute('data-taskchecklist-id');
+    const updatedStatus = rowElement.querySelector('input.status-dropdown').value;
+    const updatedComment = rowElement.querySelector('textarea').value;
+    let lastUpdated = rowElement.getAttribute('data-last-updated');  
+
+    if (!lastUpdated) {
+        console.error('LastUpdated is null or undefined');
+        return;
+    }
+
+    console.log(`Sending LastUpdated: ${lastUpdated}`);
+
+    const statusMap = {
+        "TODO": 0,
+        "SKIPPED": 1,
+        "DONE": 2
+    };
+
+    fetch(`/api/taskchecklist/${taskChecklistId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            status: statusMap[updatedStatus],
+            comment: updatedComment,
+            lastUpdated: lastUpdated  
+        })
+    })
+        .then(response => {
+            if (response.status === 409) {
+                console.log(response.text().then(text => Promise.reject(text)));
+                showCustomReloadModal(); 
                 return;
             }
 
-            const initialValue = hiddenInput.value;
-            const initialItem = dropdownMenu.querySelector(`li[data-value="${initialValue}"]`);
-
-            if (initialItem) {
-                dropdownToggle.textContent = initialItem.textContent;
-                dropdownToggle.className = 'dropdown-toggle ' + initialItem.className;
+            if (!response.ok) {
+                console.error('Failed to update the task checklist, server responded with:', response.status);
+                return response.text().then(text => Promise.reject(text));
             }
 
-            dropdownToggle.addEventListener('click', function () {
-                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-            });
-
-            dropdownMenu.querySelectorAll('li').forEach(function (item) {
-                item.addEventListener('click', function () {
-                    dropdownToggle.textContent = this.textContent;
-                    hiddenInput.value = this.getAttribute('data-value');
-                    dropdownMenu.style.display = 'none';
-
-                    dropdownToggle.className = 'dropdown-toggle ' + this.className;
-
-                    saveTaskUpdate(dropdown.closest('tr'));
-                });
-            });
-        });
-    }
-
-    function debounce(func, wait) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-
-    function initializeTextareas(textareas) {
-        textareas.forEach(function (textarea) {
-            autoResize(textarea);
-            updateCharCount(textarea);
-
-            const debouncedSaveTaskUpdate = debounce(function () {
-                saveTaskUpdate(textarea.closest('tr'));
-            }, 2000); 
-
-            textarea.addEventListener('input', function () {
-                autoResize(textarea);
-                updateCharCount(textarea);
-                debouncedSaveTaskUpdate();
-            });
-        });
-    }
-
-    function autoResize(textarea) {
-        textarea.style.height = '10px';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    }
-
-    function updateCharCount(textarea) {
-        const maxLength = textarea.getAttribute('maxlength');
-        const currentLength = textarea.value.length;
-        const charCountDisplay = textarea.nextElementSibling;
-
-        if (currentLength >= maxLength) {
-            textarea.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
-            charCountDisplay.textContent = `0 characters remaining`;
-        } else {
-            textarea.style.backgroundColor = '';
-            charCountDisplay.textContent = '';
-        }
-
-        if (currentLength > maxLength) {
-            textarea.value = textarea.value.substring(0, maxLength);
-        }
-    }
-
-    function saveTaskUpdate(rowElement) {
-        const taskChecklistId = rowElement.getAttribute('data-taskcheklist-id');
-        const updatedStatus = rowElement.querySelector('input.status-dropdown').value;
-        const updatedComment = rowElement.querySelector('textarea').value;
-
-        const statusMap = {
-            "TODO": 0,
-            "SKIPPED": 1,
-            "DONE": 2
-        };
-
-        console.log('Sending status:', statusMap[updatedStatus]);
-        console.log(`Saving Task Update for Taskchecklist ID: ${taskChecklistId}`);
-        console.log(`Updated Comment: ${updatedComment}`);
-
-        fetch(`/api/taskchecklist/${taskChecklistId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                status: statusMap[updatedStatus],
-                comment: updatedComment
-            })
+            return response.json(); 
         })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Failed to update the task checklist, server responded with:', response.status);
-                    return response.text().then(text => Promise.reject(text));
-                }
-                return response.text();
-            })
-            .then(data => {
-                console.log('Update successful');
-            })
-            .catch(error => {
-                console.error('Error updating task checklist:', error);
-            });
-    }
+        .then(data => {
+            if (!data) {
+                throw new Error("Received undefined or null data from the server");
+            }
+            console.log('Update successful');
+            console.log('Received Data:', data);
+            console.log(`Received LastUpdated: ${data.lastUpdated}`);
+            rowElement.setAttribute('data-last-updated', data.lastUpdated);
+        })
+        .catch(error => {
+            console.error('Error updating task checklist:', error);
+        });
+}
 
-});
+function showCustomReloadModal() {
+    const modal = document.getElementById('customReloadModal');
+    const refreshButton = document.getElementById('customReloadButton');
+
+    modal.style.display = 'block';
+
+    refreshButton.onclick = function () {
+        window.location.reload();
+    };
+}

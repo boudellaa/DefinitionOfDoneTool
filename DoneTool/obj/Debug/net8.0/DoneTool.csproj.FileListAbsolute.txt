@@ -152,3 +152,17 @@ C:\Users\AliBO\source\repos\DDT\DoneTool\obj\Debug\net8.0\ref\DoneTool.dll
 C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.dll
 C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.pdb
 C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Skyline.DataMiner.Utils.JsonOps.xml
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.Http.Connections.Client.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.Http.Connections.Common.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Client.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Client.Core.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Common.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.Extensions.Features.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+C:\Users\AliBO\source\repos\DDT\DoneTool\bin\Debug\net8.0\appsettings.Secrets.json

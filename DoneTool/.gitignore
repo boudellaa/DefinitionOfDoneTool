@@ -1,0 +1,11 @@
+# Ignore the secret configuration files
+appsettings.Secrets.json
+
+# Ignore user-specific files
+*.vs
+*.user
+*.suo
+
+# Ignore build output
+bin/
+obj/

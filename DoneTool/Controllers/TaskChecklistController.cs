@@ -4,6 +4,7 @@
 
 namespace DoneTool.Controllers
 {
+    using System;
     using AutoMapper;
     using DoneTool.Models.Domain;
     using DoneTool.Models.DTO;
@@ -71,7 +72,13 @@ namespace DoneTool.Controllers
         /// </summary>
         /// <param name="id">The ID of the task checklist to update.</param>
         /// <param name="taskChecklistDTO">The DTO containing the updated details of the task checklist.</param>
-        /// <returns>A status indicating the result of the operation.</returns>
+        /// <returns>
+        /// An IActionResult that represents the result of the update operation.
+        /// Returns:
+        /// - 200 OK with the updated LastUpdated timestamp if the operation is successful.
+        /// - 404 Not Found if the task checklist with the specified ID does not exist.
+        /// - 409 Conflict if the task checklist has been updated by someone else since it was last retrieved.
+        /// </returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTaskChecklist(Guid id, PutTaskChecklistDTO taskChecklistDTO)
         {
@@ -81,11 +88,21 @@ namespace DoneTool.Controllers
                 return this.NotFound();
             }
 
-            mapper.Map(taskChecklistDTO, existingTaskChecklist);
+            if (taskChecklistDTO.LastUpdated.ToString("yyyy-MM-ddTHH:mm:ssZ")
+                != existingTaskChecklist.LastUpdated.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+            {
+                return this.StatusCode(409, "The data has been updated by someone else. Please reload and try again.");
+            }
+
+            existingTaskChecklist.Status = taskChecklistDTO.Status;
+            existingTaskChecklist.Comment = taskChecklistDTO.Comment;
+            existingTaskChecklist.LastUpdated = DateTime.UtcNow;
 
             await taskChecklistRepository.UpdateTaskChecklist(existingTaskChecklist);
 
-            return this.NoContent();
+            var response = new { existingTaskChecklist.LastUpdated };
+
+            return this.Ok(response);
         }
 
         /// <summary>

@@ -13,7 +13,7 @@
     <table class="table">
         <thead>
             <tr class="header-row">
-                <th>Subtasks</th>
+                <th>Steps</th>
                 <th>Status</th>
                 <th>Guard</th>
                 <th>Comment</th>
@@ -22,28 +22,62 @@
         <tbody>
             @foreach (var task in Model.Checks)
             {
-                <tr data-taskcheklist-id="@task.ID">
-                    <td>@task.Subtask</td>
+                <tr data-taskchecklist-id="@task.ID" data-last-updated="@task.LastUpdated.ToString("o")">
+                    <td>@task.Step</td>
                     <td>
                         <div class="custom-dropdown">
-                            <button class="dropdown-toggle">@task.SelectedStatus</button>
+                            <div class="status-button-wrapper">
+                                <!-- Status button -->
+                                <button class="status-button @("status-" + task.SelectedStatus.ToLower())" onclick="toggleStatus(this)">
+                                    @task.SelectedStatus
+                                </button>
+                                <!-- Arrow button -->
+                                <button class="arrow-button status-@task.SelectedStatus.ToLower()" onclick="toggleDropdownMenu(this)">
+                                    <span class="dropdown-arrow">▼</span>
+                                </button>
+                            </div>
                             <ul class="dropdown-menu">
                                 <li class="status-todo" data-value="TODO">TODO</li>
                                 <li class="status-skipped" data-value="SKIPPED">SKIPPED</li>
-                                <li class="status-done" data-value="DONE">DONE</li>
                             </ul>
                             <input type="hidden" name="status" class="form-control status-dropdown" value="@task.SelectedStatus">
                         </div>
                     </td>
-                    <td id="guard-name">@task.Guard</td>
                     <td>
-                        <textarea asp-for="@task.Comment" class="form-control" placeholder="Enter your comment (max. 80 characters)" maxlength="80">@task.Comment</textarea>
-                        <div class="char-count"></div>
+                        <select class="form-control guard-dropdown" asp-for="@task.Guard">
+                            <option value="">Select Guard</option>
+                            @foreach (var guard in Model.Guards)
+                            {
+                                <option value="@guard.Name">@guard.Name</option>
+                            }
+                        </select>
+                    </td>
+
+                    <td>
+                        <textarea asp-for="@task.Comment" class="form-control" placeholder="Enter your comment">@task.Comment</textarea>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+</div>
+
+<!-- Modal for skipping a task -->
+<div id="commentModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Provide a reason for skipping</h2>
+        <textarea id="skipComment" class="form-control" placeholder="Enter your comment (min 10 characters)"></textarea>
+        <button id="submitSkip" onclick="submitSkip()">Submit</button>
+    </div>
+</div>
+
+<!-- Custom Modal for Data Reload -->
+<div id="customReloadModal" class="custom-reload-modal">
+    <div class="custom-reload-modal-content">
+        <p>The data has been updated by someone else. Please reload the page and try again.</p>
+        <button id="customReloadButton">Reload Page</button>
+    </div>
 </div>
 
 <script src="~/js/taskManager.js"></script>
