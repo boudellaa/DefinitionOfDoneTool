@@ -193,10 +193,12 @@ select.form-control {
 .dropdown-menu li {
     padding: 8px;
     cursor: pointer;
+    color: white;
 }
 
 .dropdown-menu li:hover {
     background-color: #f1f1f1;
+    color: black;
 }
 
 .modal {

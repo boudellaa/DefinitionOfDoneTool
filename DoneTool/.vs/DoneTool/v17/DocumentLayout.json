@@ -62,8 +62,7 @@
               "ViewState": "AgIAAEYAAAAAAAAAAAAwwMYAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2024-09-11T09:11:05.843Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -76,8 +75,7 @@
               "ViewState": "AgIAACEAAAAAAAAAAAAwwEoAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-09-11T09:16:28.825Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -89,8 +87,7 @@
               "RelativeToolTip": "..\\JsonNuGeT\\Utils.JsonOps\\Data\\task.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-09-11T11:56:39.02Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-11T11:56:39.02Z"
             },
             {
               "$type": "Document",
@@ -100,7 +97,7 @@
               "RelativeDocumentMoniker": "Services\\TaskService.cs",
               "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Services\\TaskService.cs",
               "RelativeToolTip": "Services\\TaskService.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAA/wEEAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAswEEAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-11T09:20:06.097Z",
               "EditorCaption": ""
@@ -115,8 +112,7 @@
               "RelativeToolTip": "Data\\DoneToolContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-11T07:39:21.856Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-11T07:39:21.856Z"
             },
             {
               "$type": "Document",
@@ -128,8 +124,7 @@
               "RelativeToolTip": "Models\\SkylineApiModels\\TaskDetailsDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T11:46:58.44Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T11:46:58.44Z"
             },
             {
               "$type": "Document",
@@ -141,8 +136,7 @@
               "RelativeToolTip": "Services\\SkylineApiService.cs",
               "ViewState": "AgIAAFsAAAAAAAAAAAAkwLcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T08:52:51.246Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T08:52:51.246Z"
             }
           ]
         },
@@ -160,8 +154,7 @@
               "RelativeToolTip": "Models\\SkylineApiModels\\SkylineApiData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T09:07:23.423Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T09:07:23.423Z"
             },
             {
               "$type": "Document",
@@ -186,8 +179,7 @@
               "RelativeToolTip": "Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T07:40:23.117Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T07:40:23.117Z"
             }
           ]
         }
