@@ -10,6 +10,8 @@ namespace DoneTool.Services
     using DoneTool.Data;
     using DoneTool.Models.Domain;
     using DoneTool.Models.DTO;
+    using DoneTool.Models.SkylineApiModels;
+    using Microsoft.Extensions.Options;
     using Skyline.DataMiner.Utils.JsonOps.Models;
 
     /// <summary>
@@ -18,14 +20,16 @@ namespace DoneTool.Services
     public class TaskService
     {
         private readonly DoneToolContext context;
+        private readonly SkylineApiService skylineApiService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskService"/> class.
         /// </summary>
         /// <param name="context">The database context used to interact with the DoneTool database.</param>
-        public TaskService(DoneToolContext context)
+        public TaskService(DoneToolContext context, SkylineApiService skylineApiService)
         {
             this.context = context;
+            this.skylineApiService = skylineApiService;
         }
 
         public List<CheckWithChecklistID> GetChecksForTask(TaskInfo taskInfo)
@@ -52,7 +56,8 @@ namespace DoneTool.Services
 
             var checkWithChecklistID = taskChecks.Select(tc => new CheckWithChecklistID
             {
-                Check = this.context.Checks.FirstOrDefault(c => c.ID == this.context.TaskChecks.FirstOrDefault(tch => tch.ID == tc.TaskChecksID).CheckID),
+                Check = this.context.Checks
+                        .FirstOrDefault(c => c.ID == this.context.TaskChecks.FirstOrDefault(tch => tch.ID == tc.TaskChecksID).CheckID),
                 TaskChecklistID = tc.ID,
             })
             .Where(cwtc => cwtc.Check != null)
@@ -63,8 +68,11 @@ namespace DoneTool.Services
 
         private List<CheckWithChecklistID> CreateNewRelationships(TaskInfo taskInfo)
         {
+            var taskData = skylineApiService.FetchTaskDataAsync(taskInfo.TaskID).GetAwaiter().GetResult();
+            var taskType = taskData.Type;
+
             var taskChecks = this.context.TaskChecks
-                .Where(tc => tc.TaskType == taskInfo.TaskType)
+                .Where(tc => tc.TaskType == taskType)
                 .OrderBy(tc => tc.Step)
                 .ToList();
 
@@ -78,7 +86,7 @@ namespace DoneTool.Services
                     TaskID = taskInfo.TaskID,
                     TaskChecksID = taskCheck.ID,
                     Status = TaskStatus.TODO,
-                    Guard = taskInfo.Guard,
+                    Guard = string.Empty,
                 };
 
                 this.context.TaskChecklist.Add(newTaskChecklistEntry);

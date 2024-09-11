@@ -85,26 +85,17 @@ namespace DoneTool.Services
 
         public async Task<TaskDetailsDTO> GetTaskDetailsAsync(TaskInfo taskInfo)
         {
-            if (taskInfo == null || taskInfo.TaskID == 0)
+            if (taskInfo == null || taskInfo.TaskID < 100000 || taskInfo.TaskID > 999999)
             {
                 throw new ArgumentNullException(nameof(taskInfo), "TaskInfo or TaskID cannot be null or zero.");
-            }
-
-            if (string.IsNullOrEmpty(this.accessToken))
-            {
-                this.accessToken = await this.GetAccessTokenAsync();
             }
 
             try
             {
                 this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.accessToken);
 
-                var response = await this.httpClient.GetAsync($"https://api.skyline.be/api/dcp/Tasks/ById?ids[0]={taskInfo.TaskID}");
-                response.EnsureSuccessStatusCode();
+                var taskData = await this.FetchTaskDataAsync(taskInfo.TaskID);
 
-                var content = await response.Content.ReadAsStringAsync();
-                var taskDataList = JsonConvert.DeserializeObject<List<TaskResponse>>(content);
-                var taskData = taskDataList.FirstOrDefault() ?? throw new Exception("No task data returned from API.");
                 var allPersonsTaskApi = new List<PersonReference>
                 {
                     taskData.Assignee,
@@ -122,6 +113,11 @@ namespace DoneTool.Services
                 string productOwnerName = string.Empty;
                 List<string> codeOwnerNames = new List<string>();
 
+                if (string.IsNullOrEmpty(this.accessToken))
+                {
+                    this.accessToken = await this.GetAccessTokenAsync();
+                }
+
                 if (!string.IsNullOrEmpty(taskData.IntegrationID))
                 {
                     var ownerResponse = await this.httpClient.GetAsync($"https://api.skyline.be/api/dcp/Drivers/ByIntegrationID?ids[0]={taskData.IntegrationID}");
@@ -135,16 +131,13 @@ namespace DoneTool.Services
                         driver.ProductOwner,
                         driver.Creator,
                     };
+
                     allPersonsDriverApi.AddRange(driver.CodeOwner);
 
                     if (driverData != null && driverData.Count != 0)
                     {
-                        if (driver != null)
-                        {
-                            productOwnerName = ResolveName(driver.ProductOwner, allPersonsDriverApi);
-
-                            codeOwnerNames.AddRange(driver.CodeOwner.Select(co => ResolveName(co, allPersonsDriverApi)));
-                        }
+                        productOwnerName = ResolveName(driver.ProductOwner, allPersonsDriverApi);
+                        codeOwnerNames.AddRange(driver.CodeOwner.Select(co => ResolveName(co, allPersonsDriverApi)));
                     }
                 }
 
@@ -167,6 +160,29 @@ namespace DoneTool.Services
                 throw;
             }
         }
+
+
+        public async Task<TaskResponse> FetchTaskDataAsync(int taskId)
+        {
+            if (taskId < 100000 || taskId > 999999)
+            {
+                throw new ArgumentException("TaskID must be a six-digit number.", nameof(taskId));
+            }
+
+            if (string.IsNullOrEmpty(this.accessToken))
+            {
+                this.accessToken = await this.GetAccessTokenAsync();
+            }
+
+            this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.accessToken);
+            var response = await this.httpClient.GetAsync($"https://api.skyline.be/api/dcp/Tasks/ById?ids[0]={taskId}");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var taskDataList = JsonConvert.DeserializeObject<List<TaskResponse>>(content);
+            return taskDataList.FirstOrDefault() ?? throw new Exception("No task data returned from API.");
+        }
+
 
         private static string ResolveName(PersonReference reference, List<PersonReference> allPersons)
         {
