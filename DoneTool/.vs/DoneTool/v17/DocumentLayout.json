@@ -3,6 +3,21 @@
   "WorkspaceRootPath": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C3A96461-52BD-44AD-8CF2-A4B8DD87A406}|..\\JsonNuGeT\\Utils.JsonOps\\Utils.JsonOps.csproj|c:\\users\\alibo\\source\\repos\\ddt\\jsonnuget\\utils.jsonops\\data\\task.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\data\\donetoolcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:data\\donetoolcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\services\\skylineapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:services\\skylineapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -13,10 +28,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\models\\skylineapimodels\\skylineapidata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:models\\skylineapimodels\\skylineapidata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\services\\skylineapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|solutionrelative:services\\skylineapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{20DDEF2E-588F-4AE4-AE69-D8C22728C1B3}|DoneTool.csproj|c:\\users\\alibo\\source\\repos\\ddt\\donetool\\models\\skylineapimodels\\taskdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,11 +41,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 337,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
+              "Title": "task.json",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\JsonNuGeT\\Utils.JsonOps\\Data\\task.json",
+              "RelativeDocumentMoniker": "..\\JsonNuGeT\\Utils.JsonOps\\Data\\task.json",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\JsonNuGeT\\Utils.JsonOps\\Data\\task.json",
+              "RelativeToolTip": "..\\JsonNuGeT\\Utils.JsonOps\\Data\\task.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-11T07:50:01.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-11T07:44:48.066Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DoneToolContext.cs",
+              "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Data\\DoneToolContext.cs",
+              "RelativeDocumentMoniker": "Data\\DoneToolContext.cs",
+              "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Data\\DoneToolContext.cs",
+              "RelativeToolTip": "Data\\DoneToolContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-11T07:39:21.856Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "TaskDetailsDTO.cs",
               "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\SkylineApiModels\\TaskDetailsDTO.cs",
               "RelativeDocumentMoniker": "Models\\SkylineApiModels\\TaskDetailsDTO.cs",
@@ -42,8 +92,7 @@
               "RelativeToolTip": "Models\\SkylineApiModels\\TaskDetailsDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T11:46:58.44Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T11:46:58.44Z"
             },
             {
               "$type": "Document",
@@ -66,7 +115,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "SkylineApiData.cs",
               "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\SkylineApiModels\\SkylineApiData.cs",
               "RelativeDocumentMoniker": "Models\\SkylineApiModels\\SkylineApiData.cs",
@@ -74,12 +123,11 @@
               "RelativeToolTip": "Models\\SkylineApiModels\\SkylineApiData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T09:07:23.423Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T09:07:23.423Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "TaskResponse.cs",
               "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Models\\SkylineApiModels\\TaskResponse.cs",
               "RelativeDocumentMoniker": "Models\\SkylineApiModels\\TaskResponse.cs",
@@ -87,18 +135,17 @@
               "RelativeToolTip": "Models\\SkylineApiModels\\TaskResponse.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T09:05:28.74Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T09:05:28.74Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
               "ToolTip": "C:\\Users\\AliBO\\source\\repos\\DDT\\DoneTool\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAIwCIAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-10T07:40:23.117Z",
               "EditorCaption": ""

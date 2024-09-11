@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoneTool.Migrations
 {
     [DbContext(typeof(DoneToolContext))]
-    [Migration("20240909102308_AddColumnLastUpdated")]
-    partial class AddColumnLastUpdated
+    [Migration("20240911081151_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
