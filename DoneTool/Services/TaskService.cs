@@ -65,6 +65,7 @@ namespace DoneTool.Services
         {
             var taskChecks = this.context.TaskChecks
                 .Where(tc => tc.TaskType == taskInfo.TaskType)
+                .OrderBy(tc => tc.Step)
                 .ToList();
 
             List<CheckWithChecklistID> newRelationships = new List<CheckWithChecklistID>();

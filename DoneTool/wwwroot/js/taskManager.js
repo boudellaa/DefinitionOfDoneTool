@@ -5,13 +5,21 @@
     const modalTextarea = document.getElementById('skipComment');
     let activeRow;
 
-    closeBtn.onclick = function () {
+    function closeModalAndDropdown() {
         modal.style.display = "none";
+        if (activeRow) {
+            const dropdownMenu = activeRow.querySelector('.dropdown-menu');
+            dropdownMenu.style.display = 'none';
+        }
+    }
+
+    closeBtn.onclick = function () {
+        closeModalAndDropdown();
     }
 
     window.onclick = function (event) {
         if (event.target == modal) {
-            modal.style.display = "none";
+            closeModalAndDropdown();
         }
     }
 
@@ -63,7 +71,8 @@
         const commentField = activeRow.querySelector('textarea');
         commentField.value = comment;
 
-        modal.style.display = "none";
+        closeModalAndDropdown(); // Close modal and dropdown menu
+
         modalTextarea.value = '';
 
         saveTaskUpdate(activeRow);
@@ -141,7 +150,7 @@ function saveTaskUpdate(rowElement) {
     const taskChecklistId = rowElement.getAttribute('data-taskchecklist-id');
     const updatedStatus = rowElement.querySelector('input.status-dropdown').value;
     const updatedComment = rowElement.querySelector('textarea').value;
-    let lastUpdated = rowElement.getAttribute('data-last-updated');  
+    let lastUpdated = rowElement.getAttribute('data-last-updated');
 
     if (!lastUpdated) {
         console.error('LastUpdated is null or undefined');
@@ -164,13 +173,13 @@ function saveTaskUpdate(rowElement) {
         body: JSON.stringify({
             status: statusMap[updatedStatus],
             comment: updatedComment,
-            lastUpdated: lastUpdated  
+            lastUpdated: lastUpdated
         })
     })
         .then(response => {
             if (response.status === 409) {
                 console.log(response.text().then(text => Promise.reject(text)));
-                showCustomReloadModal(); 
+                showCustomReloadModal();
                 return;
             }
 
@@ -179,7 +188,7 @@ function saveTaskUpdate(rowElement) {
                 return response.text().then(text => Promise.reject(text));
             }
 
-            return response.json(); 
+            return response.json();
         })
         .then(data => {
             if (!data) {
