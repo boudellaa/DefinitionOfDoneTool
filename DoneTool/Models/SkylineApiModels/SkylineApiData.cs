@@ -1,4 +1,4 @@
-﻿namespace DoneTool.Models.DTO
+﻿namespace DoneTool.Models.SkylineApiModels
 {
     public class SkylineApiData
     {

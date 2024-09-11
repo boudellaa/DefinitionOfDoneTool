@@ -8,10 +8,12 @@ namespace DoneTool.Services
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
-    using DoneTool.Models.DTO;
+    using DoneTool.Models.SkylineApiModels;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json;
+    using Skyline.DataMiner.Utils.JsonOps.Models;
 
     public class SkylineApiService
     {
@@ -59,7 +61,7 @@ namespace DoneTool.Services
         {
             if (string.IsNullOrEmpty(this.accessToken))
             {
-                this.accessToken = await GetAccessTokenAsync();
+                this.accessToken = await this.GetAccessTokenAsync();
             }
 
             try
@@ -79,6 +81,112 @@ namespace DoneTool.Services
                 this.logger.LogError("Error fetching data from Skyline API: {message}", ex.Message);
                 throw;
             }
+        }
+
+        public async Task<TaskDetailsDTO> GetTaskDetailsAsync(TaskInfo taskInfo)
+        {
+            if (taskInfo == null || taskInfo.TaskID == 0)
+            {
+                throw new ArgumentNullException(nameof(taskInfo), "TaskInfo or TaskID cannot be null or zero.");
+            }
+
+            if (string.IsNullOrEmpty(this.accessToken))
+            {
+                this.accessToken = await this.GetAccessTokenAsync();
+            }
+
+            try
+            {
+                this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.accessToken);
+
+                var response = await this.httpClient.GetAsync($"https://api.skyline.be/api/dcp/Tasks/ById?ids[0]={taskInfo.TaskID}");
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                var taskDataList = JsonConvert.DeserializeObject<List<TaskResponse>>(content);
+                var taskData = taskDataList.FirstOrDefault() ?? throw new Exception("No task data returned from API.");
+                var allPersonsTaskApi = new List<PersonReference>
+                {
+                    taskData.Assignee,
+                    taskData.ProjectsSkylinePM,
+                    taskData.ProjectsSkylineTam,
+                    taskData.Developer,
+                    taskData.Creator,
+                };
+
+                var assigneeName = ResolveName(taskData.Assignee, allPersonsTaskApi);
+                var developerName = ResolveName(taskData.Developer, allPersonsTaskApi);
+                var tamName = ResolveName(taskData.ProjectsSkylineTam, allPersonsTaskApi);
+                var creatorName = ResolveName(taskData.Creator, allPersonsTaskApi);
+
+                string productOwnerName = string.Empty;
+                List<string> codeOwnerNames = new List<string>();
+
+                if (!string.IsNullOrEmpty(taskData.IntegrationID))
+                {
+                    var ownerResponse = await this.httpClient.GetAsync($"https://api.skyline.be/api/dcp/Drivers/ByIntegrationID?ids[0]={taskData.IntegrationID}");
+                    ownerResponse.EnsureSuccessStatusCode();
+
+                    var ownerContent = await ownerResponse.Content.ReadAsStringAsync();
+                    var driverData = JsonConvert.DeserializeObject<List<DriverResponse>>(ownerContent);
+                    var driver = driverData.FirstOrDefault() ?? throw new Exception("No driver data returned from API.");
+                    var allPersonsDriverApi = new List<PersonReference>()
+                    {
+                        driver.ProductOwner,
+                        driver.Creator,
+                    };
+                    allPersonsDriverApi.AddRange(driver.CodeOwner);
+
+                    if (driverData != null && driverData.Count != 0)
+                    {
+                        if (driver != null)
+                        {
+                            productOwnerName = ResolveName(driver.ProductOwner, allPersonsDriverApi);
+
+                            codeOwnerNames.AddRange(driver.CodeOwner.Select(co => ResolveName(co, allPersonsDriverApi)));
+                        }
+                    }
+                }
+
+                return new TaskDetailsDTO
+                {
+                    Title = taskData.Title,
+                    Type = taskData.Type,
+                    AssigneeName = assigneeName,
+                    DeveloperName = developerName,
+                    IntegrationID = taskData.IntegrationID,
+                    TamName = tamName,
+                    CreatorName = creatorName,
+                    ProductOwnerName = productOwnerName,
+                    CodeOwnerNames = codeOwnerNames,
+                };
+            }
+            catch (HttpRequestException ex)
+            {
+                this.logger.LogError("Error fetching task details from Skyline API: {message}", ex.Message);
+                throw;
+            }
+        }
+
+        private static string ResolveName(PersonReference reference, List<PersonReference> allPersons)
+        {
+            if (reference == null)
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(reference.Name))
+            {
+                return reference.Name;
+            }
+
+            if (reference.Ref == null)
+            {
+                return string.Empty;
+            }
+
+            var person = allPersons.FirstOrDefault(p => p.ID == reference?.Ref);
+            return person?.Name ?? string.Empty;
         }
 
         private class TokenResponse

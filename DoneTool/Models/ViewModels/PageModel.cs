@@ -1,4 +1,4 @@
-﻿using DoneTool.Models.DTO;
+﻿using DoneTool.Models.SkylineApiModels;
 
 namespace DoneTool.Models.ViewModels
 {
@@ -7,6 +7,6 @@ namespace DoneTool.Models.ViewModels
         public string TaskTitle { get; set; }
         public string DeveloperName { get; set; }
         public List<TaskViewModel> Checks { get; set; }
-        public List<SkylineUser> Guards { get; set; }
+        public List<string> Guards { get; set; }
     }
 }

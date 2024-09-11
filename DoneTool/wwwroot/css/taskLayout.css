@@ -110,7 +110,7 @@
     border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     transition: border-color 0.3s, box-shadow 0.3s;
-    min-height: 80px;
+    height: 80px;
 }
 
 select.form-control {

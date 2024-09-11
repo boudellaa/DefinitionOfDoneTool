@@ -8,7 +8,7 @@ namespace DoneTool.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using DoneTool.Data;
-    using DoneTool.Models.DTO;
+    using DoneTool.Models.SkylineApiModels;
     using DoneTool.Models.ViewModels;
     using DoneTool.Services;
     using Microsoft.AspNetCore.Mvc;
@@ -40,18 +40,6 @@ namespace DoneTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            this.logger.LogInformation("Starting API call to Skyline...");
-
-            var skylineUsersJson = await this.skylineApiService.GetSkylineUsersAsync();
-
-            var skylineUsers = JsonConvert.DeserializeObject<List<SkylineUser>>(skylineUsersJson);
-
-            var filteredGuards = skylineUsers
-                .Where(user => user.JobTitle == "Principal Product Owner" || user.JobTitle == "Technical Account Manager")
-                .ToList();
-
-            this.logger.LogInformation("Filtered guards count: {count}", filteredGuards.Count);
-
             string jsonFilePath = "../JsonNuGeT/Utils.JsonOps/Data/task.json";
 
             var taskInfo = this.jsonTaskService.ReadTaskFromJson(jsonFilePath);
@@ -61,13 +49,22 @@ namespace DoneTool.Controllers
                 return this.NotFound("Task information could not be loaded from the JSON file.");
             }
 
+            var info = await this.skylineApiService.GetTaskDetailsAsync(taskInfo);
+
+            List<string> filteredGuards = new List<string>()
+            {
+                info.ProductOwnerName,
+            };
+
+            filteredGuards.AddRange(info.CodeOwnerNames);
+
             var checksWithTaskChecklist = this.taskService.GetChecksForTask(taskInfo);
             int stepNumber = 1;
 
             var viewModel = new PageModel
             {
-                TaskTitle = taskInfo.TaskTitle,
-                DeveloperName = taskInfo.Developer,
+                TaskTitle = info.Title,
+                DeveloperName = info.AssigneeName,
                 Guards = filteredGuards,
                 Checks = checksWithTaskChecklist.Select(cwtc => new TaskViewModel
                 {

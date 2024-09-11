@@ -6,7 +6,7 @@
 
 using DoneTool.Data;
 using DoneTool.Mappings;
-using DoneTool.Models.DTO;
+using DoneTool.Models.SkylineApiModels;
 using DoneTool.Repositories.Interfaces;
 using DoneTool.Repositories.SQL;
 using DoneTool.Services;
