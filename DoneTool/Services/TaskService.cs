@@ -54,22 +54,43 @@ namespace DoneTool.Services
                 .Where(tc => tc.TaskID == taskChecklistEntry.TaskID)
                 .ToList();
 
-            var checkWithChecklistID = taskChecks.Select(tc => new CheckWithChecklistID
-            {
-                Check = this.context.Checks
-                        .FirstOrDefault(c => c.ID == this.context.TaskChecks.FirstOrDefault(tch => tch.ID == tc.TaskChecksID).CheckID),
-                TaskChecklistID = tc.ID,
-            })
-            .Where(cwtc => cwtc.Check != null)
-            .ToList();
+            var checkWithChecklistID = taskChecks
+                .Select(tc => new
+                {
+                    Check = this.context.Checks.FirstOrDefault(c => c.ID == this.context.TaskChecks.FirstOrDefault(tch => tch.ID == tc.TaskChecksID).CheckID),
+                    TaskChecklistID = tc.ID,
+                    Step = this.context.TaskChecks.FirstOrDefault(tch => tch.ID == tc.TaskChecksID).Step,
+                })
+                .Where(cwtc => cwtc.Check != null)
+                .OrderBy(cwtc => cwtc.Step)  // Order by Step column
+                .Select(cwtc => new CheckWithChecklistID
+                {
+                    Check = cwtc.Check,
+                    TaskChecklistID = cwtc.TaskChecklistID
+                })
+                .ToList();
 
             return checkWithChecklistID;
         }
 
+
+        private TaskChecklist CreateTaskChecklistEntry(TaskInfo taskInfo, TaskChecks taskCheck)
+        {
+            return new TaskChecklist
+            {
+                ID = Guid.NewGuid(),
+                TaskID = taskInfo.TaskID,
+                TaskChecksID = taskCheck.ID,
+                Status = TaskStatus.TODO,
+                Guard = string.Empty,
+            };
+        }
+
+
         private List<CheckWithChecklistID> CreateNewRelationships(TaskInfo taskInfo)
         {
-            var taskData = skylineApiService.FetchTaskDataAsync(taskInfo.TaskID).GetAwaiter().GetResult();
-            var taskType = taskData.Type;
+            var taskDetails = skylineApiService.GetTaskDetailsAsync(taskInfo).GetAwaiter().GetResult();
+            var taskType = taskDetails.Type;
 
             var taskChecks = this.context.TaskChecks
                 .Where(tc => tc.TaskType == taskType)
@@ -80,19 +101,10 @@ namespace DoneTool.Services
 
             foreach (var taskCheck in taskChecks)
             {
-                var newTaskChecklistEntry = new TaskChecklist
-                {
-                    ID = Guid.NewGuid(),
-                    TaskID = taskInfo.TaskID,
-                    TaskChecksID = taskCheck.ID,
-                    Status = TaskStatus.TODO,
-                    Guard = string.Empty,
-                };
-
+                var newTaskChecklistEntry = CreateTaskChecklistEntry(taskInfo, taskCheck);
                 this.context.TaskChecklist.Add(newTaskChecklistEntry);
 
                 var check = this.context.Checks.FirstOrDefault(c => c.ID == taskCheck.CheckID);
-
                 if (check != null)
                 {
                     newRelationships.Add(new CheckWithChecklistID
@@ -100,6 +112,21 @@ namespace DoneTool.Services
                         Check = check,
                         TaskChecklistID = newTaskChecklistEntry.ID,
                     });
+                }
+
+                if (!string.IsNullOrEmpty(taskDetails.ProductOwnerName))
+                {
+                    var duplicateTaskChecklistEntry = CreateTaskChecklistEntry(taskInfo, taskCheck);
+                    this.context.TaskChecklist.Add(duplicateTaskChecklistEntry);
+
+                    if (check != null)
+                    {
+                        newRelationships.Add(new CheckWithChecklistID
+                        {
+                            Check = check,
+                            TaskChecklistID = duplicateTaskChecklistEntry.ID,
+                        });
+                    }
                 }
             }
 
