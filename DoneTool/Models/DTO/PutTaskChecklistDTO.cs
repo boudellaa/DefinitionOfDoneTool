@@ -11,5 +11,10 @@ namespace DoneTool.Models.DTO
     public class PutTaskChecklistDTO : BaseTaskChecklistDTO
     {
         public DateTime LastUpdated { get; set; }
+
+        /// <summary>
+        /// Gets or sets the guard assigned to the task checklist.
+        /// </summary>
+        public string Guard { get; set; } = string.Empty;
     }
 }

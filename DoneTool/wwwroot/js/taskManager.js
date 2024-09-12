@@ -108,6 +108,23 @@
     if (customReloadModal) {
         customReloadModal.style.display = 'none';
     }
+
+    const guardInputs = document.querySelectorAll('.guard-search');
+    guardInputs.forEach(function (guardInput) {
+      /*  guardInput.addEventListener('blur', function () {
+            const rowElement = guardInput.closest('tr');
+            saveTaskUpdate(rowElement); 
+        });
+        */
+        const dropdownMenu = guardInput.nextElementSibling;
+        dropdownMenu.querySelectorAll('li').forEach(function (item) {
+            item.addEventListener('click', function () {
+                guardInput.value = this.getAttribute('data-value');
+                const rowElement = guardInput.closest('tr');
+                saveTaskUpdate(rowElement); 
+            });
+        });
+    });
 });
 
 function toggleStatus(button) {
@@ -150,6 +167,7 @@ function saveTaskUpdate(rowElement) {
     const taskChecklistId = rowElement.getAttribute('data-taskchecklist-id');
     const updatedStatus = rowElement.querySelector('input.status-dropdown').value;
     const updatedComment = rowElement.querySelector('textarea').value;
+    const updatedGuard = rowElement.querySelector('input.guard-search').value;
     let lastUpdated = rowElement.getAttribute('data-last-updated');
 
     if (!lastUpdated) {
@@ -173,6 +191,7 @@ function saveTaskUpdate(rowElement) {
         body: JSON.stringify({
             status: statusMap[updatedStatus],
             comment: updatedComment,
+            guard: updatedGuard,
             lastUpdated: lastUpdated
         })
     })

@@ -104,7 +104,10 @@ namespace DoneTool.Controllers
                                           .Where(tc => tc.ID == cwtc.TaskChecklistID)
                                           .Select(tc => tc.Comment)
                                           .FirstOrDefault() ?? string.Empty,
-                    Guard = string.Empty,
+                    Guard = this.context.TaskChecklist
+                                        .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                        .Select(tc => tc.Guard)
+                                        .FirstOrDefault() ?? string.Empty,
                     LastUpdated = this.context.TaskChecklist
                                    .Where(tc => tc.ID == cwtc.TaskChecklistID)
                                    .Select(tc => tc.LastUpdated)
@@ -114,6 +117,5 @@ namespace DoneTool.Controllers
 
             return this.View(viewModel);
         }
-
     }
 }

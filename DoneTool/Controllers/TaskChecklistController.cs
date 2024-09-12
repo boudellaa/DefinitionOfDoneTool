@@ -96,6 +96,7 @@ namespace DoneTool.Controllers
 
             existingTaskChecklist.Status = taskChecklistDTO.Status;
             existingTaskChecklist.Comment = taskChecklistDTO.Comment;
+            existingTaskChecklist.Guard = taskChecklistDTO.Guard;
             existingTaskChecklist.LastUpdated = DateTime.UtcNow;
 
             await taskChecklistRepository.UpdateTaskChecklist(existingTaskChecklist);

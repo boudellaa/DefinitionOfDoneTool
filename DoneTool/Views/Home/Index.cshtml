@@ -42,32 +42,32 @@
                         </div>
                     </td>
                     <td>
-                        <div class="select-wrapper">
-                            <input type="text" class="form-control guard-search" placeholder="Search Guards" oninput="filterGuards(this)">
-                            <select class="form-control guard-dropdown" size="5" onchange="updateGuardInput(this)">
-                                <option disabled>Suggested</option>
+                        <div class="custom-guard-dropdown">
+                            <input type="text" class="form-control guard-search" placeholder="Search Guards" value="@task.Guard" onclick="toggleGuardDropdown(this)" oninput="filterGuardOptions(this)">
+                            <ul class="guard-dropdown-menu">
+                                <li class="dropdown-section">Suggested</li>
                                 @if (!string.IsNullOrEmpty(Model.TamName))
                                 {
-                                    <option value="@Model.TamName">@Model.TamName</option>
+                                    <li class="guard-option" data-value="@Model.TamName">@Model.TamName</li>
                                 }
                                 @if (!string.IsNullOrEmpty(Model.CreatorName))
                                 {
-                                    <option value="@Model.CreatorName">@Model.CreatorName</option>
+                                    <li class="guard-option" data-value="@Model.CreatorName">@Model.CreatorName</li>
                                 }
                                 @if (!string.IsNullOrEmpty(Model.ProductOwnerName))
                                 {
-                                    <option value="@Model.ProductOwnerName">@Model.ProductOwnerName</option>
+                                    <li class="guard-option" data-value="@Model.ProductOwnerName">@Model.ProductOwnerName</li>
                                 }
                                 @foreach (var codeOwnerName in Model.CodeOwnerNames)
                                 {
-                                    <option value="@codeOwnerName">@codeOwnerName</option>
+                                    <li class="guard-option" data-value="@codeOwnerName">@codeOwnerName</li>
                                 }
-                                <option disabled>Other</option>
+                                <li class="dropdown-section">Other</li>
                                 @foreach (var guard in Model.Guards)
                                 {
-                                    <option value="@guard">@guard</option>
+                                    <li class="guard-option" data-value="@guard">@guard</li>
                                 }
-                            </select>
+                            </ul>
                         </div>
                     </td>
                     <td>
@@ -98,22 +98,25 @@
 <script src="~/js/taskManager.js"></script>
 
 <script>
-function filterGuards(input) {
+function toggleGuardDropdown(input) {
+    const dropdown = input.nextElementSibling;
+    dropdown.classList.toggle('show'); // Toggle the visibility of the dropdown
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', function(event) {
+        if (!input.parentElement.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+function filterGuardOptions(input) {
     const filter = input.value.toLowerCase();
-    const select = input.nextElementSibling;
-    const options = select.querySelectorAll("option");
-
-    let selectedOption = select.querySelector('option[selected]');
-
-    if (filter === '' && selectedOption) {
-        selectedOption.removeAttribute('selected');
-        select.value = '';
-    }
+    const dropdown = input.nextElementSibling;
+    const options = dropdown.querySelectorAll(".guard-option");
 
     options.forEach(option => {
         if (option.textContent.toLowerCase().includes(filter)) {
-            option.style.display = "";
-        } else if (option.disabled) {
             option.style.display = "";
         } else {
             option.style.display = "none";
@@ -121,18 +124,11 @@ function filterGuards(input) {
     });
 }
 
-function updateGuardInput(selectElement) {
-    const selectedGuard = selectElement.value;
-    const inputElement = selectElement.previousElementSibling;
-
-    inputElement.value = selectedGuard;
-    selectElement.querySelectorAll('option').forEach(option => {
-        if (option.value === selectedGuard) {
-            option.setAttribute('selected', 'selected');
-        } else {
-            option.removeAttribute('selected');
-        }
+document.querySelectorAll('.guard-option').forEach(option => {
+    option.addEventListener('click', function() {
+        const input = this.parentElement.previousElementSibling;
+        input.value = this.dataset.value; // Set the input value to the selected option
+        this.parentElement.classList.remove('show'); // Hide the dropdown after selection
     });
-}
-
+});
 </script>
