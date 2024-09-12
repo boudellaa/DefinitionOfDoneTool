@@ -27,11 +27,9 @@
                     <td>
                         <div class="custom-dropdown">
                             <div class="status-button-wrapper">
-                                <!-- Status button -->
                                 <button class="status-button @("status-" + task.SelectedStatus.ToLower())" onclick="toggleStatus(this)">
                                     @task.SelectedStatus
                                 </button>
-                                <!-- Arrow button -->
                                 <button class="arrow-button status-@task.SelectedStatus.ToLower()" onclick="toggleDropdownMenu(this)">
                                     <span class="dropdown-arrow">▼</span>
                                 </button>
@@ -44,15 +42,34 @@
                         </div>
                     </td>
                     <td>
-                        <select class="form-control guard-dropdown" asp-for="@task.Guard">
-                            <option value="">Select Guard</option>
-                            @foreach (var guard in Model.Guards)
-                            {
-                                <option value="@guard">@guard</option>
-                            }
-                        </select>
+                        <div class="select-wrapper">
+                            <input type="text" class="form-control guard-search" placeholder="Search Guards" oninput="filterGuards(this)">
+                            <select class="form-control guard-dropdown" size="5" onchange="updateGuardInput(this)">
+                                <option disabled>Suggested</option>
+                                @if (!string.IsNullOrEmpty(Model.TamName))
+                                {
+                                    <option value="@Model.TamName">@Model.TamName</option>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.CreatorName))
+                                {
+                                    <option value="@Model.CreatorName">@Model.CreatorName</option>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ProductOwnerName))
+                                {
+                                    <option value="@Model.ProductOwnerName">@Model.ProductOwnerName</option>
+                                }
+                                @foreach (var codeOwnerName in Model.CodeOwnerNames)
+                                {
+                                    <option value="@codeOwnerName">@codeOwnerName</option>
+                                }
+                                <option disabled>Other</option>
+                                @foreach (var guard in Model.Guards)
+                                {
+                                    <option value="@guard">@guard</option>
+                                }
+                            </select>
+                        </div>
                     </td>
-
                     <td>
                         <textarea asp-for="@task.Comment" class="form-control" placeholder="Enter your comment">@task.Comment</textarea>
                     </td>
@@ -62,7 +79,6 @@
     </table>
 </div>
 
-<!-- Modal for skipping a task -->
 <div id="commentModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -72,7 +88,6 @@
     </div>
 </div>
 
-<!-- Custom Modal for Data Reload -->
 <div id="customReloadModal" class="custom-reload-modal">
     <div class="custom-reload-modal-content">
         <p>The data has been updated by someone else. Please reload the page and try again.</p>
@@ -81,3 +96,43 @@
 </div>
 
 <script src="~/js/taskManager.js"></script>
+
+<script>
+function filterGuards(input) {
+    const filter = input.value.toLowerCase();
+    const select = input.nextElementSibling;
+    const options = select.querySelectorAll("option");
+
+    let selectedOption = select.querySelector('option[selected]');
+
+    if (filter === '' && selectedOption) {
+        selectedOption.removeAttribute('selected');
+        select.value = '';
+    }
+
+    options.forEach(option => {
+        if (option.textContent.toLowerCase().includes(filter)) {
+            option.style.display = "";
+        } else if (option.disabled) {
+            option.style.display = "";
+        } else {
+            option.style.display = "none";
+        }
+    });
+}
+
+function updateGuardInput(selectElement) {
+    const selectedGuard = selectElement.value;
+    const inputElement = selectElement.previousElementSibling;
+
+    inputElement.value = selectedGuard;
+    selectElement.querySelectorAll('option').forEach(option => {
+        if (option.value === selectedGuard) {
+            option.setAttribute('selected', 'selected');
+        } else {
+            option.removeAttribute('selected');
+        }
+    });
+}
+
+</script>

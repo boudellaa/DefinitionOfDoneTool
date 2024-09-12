@@ -41,7 +41,6 @@ namespace DoneTool.Controllers
         public async Task<IActionResult> Index()
         {
             string jsonFilePath = "../JsonNuGeT/Utils.JsonOps/Data/task.json";
-
             var taskInfo = this.jsonTaskService.ReadTaskFromJson(jsonFilePath);
 
             if (taskInfo == null)
@@ -51,42 +50,70 @@ namespace DoneTool.Controllers
 
             var info = await this.skylineApiService.GetTaskDetailsAsync(taskInfo);
 
-            List<string> filteredGuards = new List<string>()
+            var suggestedGuards = new HashSet<string>
             {
                 info.ProductOwnerName,
+                info.TamName,
+                info.CreatorName,
             };
 
-            filteredGuards.AddRange(info.CodeOwnerNames);
+            suggestedGuards.UnionWith(info.CodeOwnerNames.Distinct());
+
+            var usersJson = await this.skylineApiService.GetSkylineUsersAsync();
+            var users = JsonConvert.DeserializeObject<List<SkylineUser>>(usersJson);
+
+            var otherGuards = users.Select(u => u.Name).Except(suggestedGuards).ToList();
+
+            var allGuards = new HashSet<string>(otherGuards);
 
             var checksWithTaskChecklist = this.taskService.GetChecksForTask(taskInfo);
             int stepNumber = 1;
+
+            string? tamName = info.TamName;
+            string? creatorName = info.CreatorName;
+            string? productOwnerName = info.ProductOwnerName;
+
+            if (tamName == creatorName)
+            {
+                creatorName = null;
+            }
+
+            if (tamName == productOwnerName)
+            {
+                productOwnerName = null;
+            }
 
             var viewModel = new PageModel
             {
                 TaskTitle = info.Title,
                 DeveloperName = info.AssigneeName,
-                Guards = filteredGuards,
+                Guards = allGuards.ToList(),
+                TamName = tamName,
+                CreatorName = creatorName,
+                ProductOwnerName = productOwnerName,
+                CodeOwnerNames = info.CodeOwnerNames.Distinct().ToList(),
                 Checks = checksWithTaskChecklist.Select(cwtc => new TaskViewModel
                 {
                     ID = cwtc.TaskChecklistID,
                     Step = $"{stepNumber++.ToString("D2")}. {cwtc.Check.Item}",
                     SelectedStatus = this.context.TaskChecklist
-                                       .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                       .Select(tc => tc.Status.ToString())
-                                       .FirstOrDefault() ?? "TODO",
+                                               .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                               .Select(tc => tc.Status.ToString())
+                                               .FirstOrDefault() ?? "TODO",
                     Comment = this.context.TaskChecklist
-                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                  .Select(tc => tc.Comment)
-                                  .FirstOrDefault() ?? string.Empty,
+                                          .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                          .Select(tc => tc.Comment)
+                                          .FirstOrDefault() ?? string.Empty,
                     Guard = string.Empty,
                     LastUpdated = this.context.TaskChecklist
-                           .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                           .Select(tc => tc.LastUpdated)
-                           .FirstOrDefault(),
+                                   .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                   .Select(tc => tc.LastUpdated)
+                                   .FirstOrDefault(),
                 }).ToList(),
             };
 
             return this.View(viewModel);
         }
+
     }
 }

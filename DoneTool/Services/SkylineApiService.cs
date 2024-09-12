@@ -42,7 +42,6 @@ namespace DoneTool.Services
             });
 
             request.Content = content;
-
             var response = await this.httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 

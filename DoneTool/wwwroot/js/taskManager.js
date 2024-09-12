@@ -71,7 +71,7 @@
         const commentField = activeRow.querySelector('textarea');
         commentField.value = comment;
 
-        closeModalAndDropdown(); // Close modal and dropdown menu
+        closeModalAndDropdown();
 
         modalTextarea.value = '';
 
