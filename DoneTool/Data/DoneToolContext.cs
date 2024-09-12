@@ -28,5 +28,7 @@ namespace DoneTool.Data
         /// Gets or sets the DbSet of TaskChecks.
         /// </summary>
         public DbSet<TaskChecks> TaskChecks { get; set; }
+
+        public DbSet<CheckSkipReason> CheckSkipReasons { get; set; }
     }
 }
