@@ -22,7 +22,7 @@
         <tbody>
             @foreach (var task in Model.Checks)
             {
-                <tr data-taskchecklist-id="@task.ID" data-last-updated="@task.LastUpdated.ToString("o")">
+                <tr data-taskchecklist-id="@task.ID" data-last-updated="@task.LastUpdated.ToString("o")" data-skip-reasons='@string.Join(",", task.SkipReasons)'>
                     <td>@task.Step</td>
                     <td>
                         <div class="custom-dropdown">
@@ -82,11 +82,17 @@
 <div id="commentModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Provide a reason for skipping</h2>
+        <h3>Provide a reason for skipping</h3>
         <textarea id="skipComment" class="form-control" placeholder="Enter your comment (min 10 characters)"></textarea>
+        <h5>Or select a common reason:</h5>
+        <select id="commonReasonsDropdown" class="form-control">
+            <option value="">Select a reason...</option>
+        </select>
+
         <button id="submitSkip" onclick="submitSkip()">Submit</button>
     </div>
 </div>
+
 
 <div id="customReloadModal" class="custom-reload-modal">
     <div class="custom-reload-modal-content">
@@ -100,9 +106,8 @@
 <script>
 function toggleGuardDropdown(input) {
     const dropdown = input.nextElementSibling;
-    dropdown.classList.toggle('show'); // Toggle the visibility of the dropdown
+    dropdown.classList.toggle('show');
 
-    // Close dropdown if clicking outside
     document.addEventListener('click', function(event) {
         if (!input.parentElement.contains(event.target)) {
             dropdown.classList.remove('show');
@@ -127,8 +132,8 @@ function filterGuardOptions(input) {
 document.querySelectorAll('.guard-option').forEach(option => {
     option.addEventListener('click', function() {
         const input = this.parentElement.previousElementSibling;
-        input.value = this.dataset.value; // Set the input value to the selected option
-        this.parentElement.classList.remove('show'); // Hide the dropdown after selection
+        input.value = this.dataset.value;
+        this.parentElement.classList.remove('show'); 
     });
 });
 </script>

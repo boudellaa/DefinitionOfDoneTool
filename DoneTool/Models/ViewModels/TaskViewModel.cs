@@ -14,5 +14,6 @@ namespace DoneTool.Models.ViewModels
         public string Guard { get; set; }
         public string Comment { get; set; }
         public DateTime LastUpdated { get; set; }
+        public List<string> SkipReasons { get; set; }
     }
 }

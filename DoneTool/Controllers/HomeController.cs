@@ -112,6 +112,10 @@ namespace DoneTool.Controllers
                                    .Where(tc => tc.ID == cwtc.TaskChecklistID)
                                    .Select(tc => tc.LastUpdated)
                                    .FirstOrDefault(),
+                    SkipReasons = this.context.CheckSkipReasons
+                                      .Where(csr => csr.CheckID == cwtc.Check.ID)
+                                      .Select(csr => csr.Reason)
+                                      .ToList(),
                 }).ToList(),
             };
 

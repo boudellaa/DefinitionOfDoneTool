@@ -3,6 +3,7 @@
     const modal = document.getElementById("commentModal");
     const closeBtn = document.querySelector(".close");
     const modalTextarea = document.getElementById('skipComment');
+    const reasonsDropdown = document.getElementById('commonReasonsDropdown');
     let activeRow;
 
     function closeModalAndDropdown() {
@@ -35,6 +36,8 @@
 
                 if (statusValue === 'SKIPPED') {
                     activeRow = dropdown.closest('tr');
+                    modalTextarea.value = ''; 
+                    populateReasonsDropdown(activeRow);
                     modal.style.display = "block";
                 } else {
                     hiddenInput.value = statusValue;
@@ -47,6 +50,40 @@
                 }
             });
         });
+    });
+
+    function populateReasonsDropdown(row) {
+        const reasonsAttribute = row.getAttribute('data-skip-reasons');
+
+        if (!reasonsAttribute) {
+            console.log('No reasons found for this task.');
+            return;
+        }
+
+        const reasons = reasonsAttribute.split(',');
+
+        if (!reasons || reasons.length === 0) {
+            console.log('No reasons found for this task.');
+            return;
+        }
+
+        reasonsDropdown.innerHTML = '<option value="">Select a reason...</option>';
+
+        reasons.forEach(function (reason) {
+            const option = document.createElement('option');
+            option.value = reason.trim();
+            option.textContent = reason.trim();
+            reasonsDropdown.appendChild(option);
+        });
+
+        reasonsDropdown.onchange = function () {
+            const selectedReason = this.value;
+            modalTextarea.value = selectedReason; 
+        };
+    }
+
+    modalTextarea.addEventListener('input', function () {
+        reasonsDropdown.value = ''; 
     });
 
     document.getElementById('submitSkip').onclick = function () {
@@ -111,17 +148,12 @@
 
     const guardInputs = document.querySelectorAll('.guard-search');
     guardInputs.forEach(function (guardInput) {
-      /*  guardInput.addEventListener('blur', function () {
-            const rowElement = guardInput.closest('tr');
-            saveTaskUpdate(rowElement); 
-        });
-        */
         const dropdownMenu = guardInput.nextElementSibling;
         dropdownMenu.querySelectorAll('li').forEach(function (item) {
             item.addEventListener('click', function () {
                 guardInput.value = this.getAttribute('data-value');
                 const rowElement = guardInput.closest('tr');
-                saveTaskUpdate(rowElement); 
+                saveTaskUpdate(rowElement);
             });
         });
     });
