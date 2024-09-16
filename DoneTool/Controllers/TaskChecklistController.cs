@@ -124,5 +124,56 @@ namespace DoneTool.Controllers
 
             return this.NoContent();
         }
+
+        /// <summary>
+        /// Duplicates a specific task checklist.
+        /// </summary>
+        /// <param name="id">The ID of the task checklist to duplicate.</param>
+        /// <returns>The duplicated <see cref="GetTaskChecklistDTO"/>.</returns>
+        [HttpPost("{id}/duplicate")]
+        public async Task<ActionResult<GetTaskChecklistDTO>> DuplicateTaskChecklist(Guid id)
+        {
+            var existingTaskChecklist = await taskChecklistRepository.GetTaskChecklistById(id);
+            if (existingTaskChecklist == null)
+            {
+                return this.NotFound();
+            }
+
+            var duplicateTaskChecklist = new TaskChecklist
+            {
+                ID = Guid.NewGuid(),
+                TaskID = existingTaskChecklist.TaskID,
+                TaskChecksID = existingTaskChecklist.TaskChecksID,
+                Status = existingTaskChecklist.Status,
+                Guard = existingTaskChecklist.Guard,
+                Comment = existingTaskChecklist.Comment,
+                LastUpdated = DateTime.UtcNow,
+                IsDuplicate = true,
+            };
+
+            await taskChecklistRepository.AddTaskChecklist(duplicateTaskChecklist);
+
+            var getTaskChecklistDTO = mapper.Map<GetTaskChecklistDTO>(duplicateTaskChecklist);
+            return this.Ok(new { id = duplicateTaskChecklist.ID });
+        }
+
+        /// <summary>
+        /// Deletes a duplicated task checklist.
+        /// </summary>
+        /// <param name="id">The ID of the task checklist to delete.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
+        [HttpDelete("{id}/duplicate")]
+        public async Task<IActionResult> DeleteDuplicateTaskChecklist(Guid id)
+        {
+            var taskChecklist = await taskChecklistRepository.GetTaskChecklistById(id);
+            if (taskChecklist == null || !taskChecklist.IsDuplicate)
+            {
+                return this.NotFound("Cannot delete non-duplicate task checklist.");
+            }
+
+            await taskChecklistRepository.DeleteTaskChecklist(id);
+
+            return this.NoContent();
+        }
     }
 }

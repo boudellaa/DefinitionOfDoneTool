@@ -118,6 +118,7 @@
     const textareas = document.querySelectorAll('tbody textarea');
     textareas.forEach(function (textarea) {
         const rowElement = textarea.closest('tr');
+        autoResize(textarea);
         const debouncedSaveTaskUpdate = debounce(function () {
             if (rowElement) {
                 saveTaskUpdate(rowElement);
@@ -127,9 +128,24 @@
         }, 2000);
 
         textarea.addEventListener('input', function () {
+            autoResize(textarea);
             debouncedSaveTaskUpdate();
         });
     });
+
+    function autoResize(textarea) {
+        textarea.style.height = '41.6';
+
+        let newHeight = textarea.scrollHeight;
+
+        if (newHeight > 125) {
+            textarea.style.height = '125px';  
+            textarea.style.overflowY = 'auto'; 
+        } else {
+            textarea.style.height = newHeight + 'px'; 
+            textarea.style.overflowY = 'hidden';
+        }
+    }
 
     function debounce(func, delay) {
         let timeout;
@@ -265,3 +281,20 @@ function showCustomReloadModal() {
         window.location.reload();
     };
 }
+
+function duplicateTask(id) {
+    $.post(`/api/taskchecklist/${id}/duplicate`, function () {
+        location.reload();
+    });
+}
+
+function deleteTask(id) {
+    $.ajax({
+        url: `/api/taskchecklist/${id}/duplicate`,
+        type: 'DELETE',
+        success: function (result) {
+            location.reload();
+        }
+    });
+}
+
