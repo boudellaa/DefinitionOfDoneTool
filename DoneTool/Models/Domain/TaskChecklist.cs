@@ -41,7 +41,7 @@ namespace DoneTool.Models.Domain
         /// Gets or sets the identifier for the associated task checks.
         /// </summary>
         public Guid TaskChecksID { get; set; }
-
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+        public bool IsDuplicate { get; set; } = false;
     }
 }
