@@ -23,7 +23,23 @@
             @foreach (var task in Model.Checks)
             {
                 <tr data-taskchecklist-id="@task.ID" data-last-updated="@task.LastUpdated.ToString("o")" data-skip-reasons='@string.Join(",", task.SkipReasons)'>
-                    <td>@task.Step</td>
+                    <td class="clickable-cell">
+                        <div>
+                            <a href="@task.Link" target="_blank" class="full-cell-link">
+                                <span>@task.Step</span>
+                                <img src="~/img/icon.webp" alt="Clickable Icon" class="clickable-icon" />
+                            </a>
+                        </div>
+                        <div id="duplicateBtn">
+                            @if (!task.IsDuplicate)
+                            {
+                                <button onclick="duplicateTask('@task.ID')" class="btn btn-primary btn-center">Duplicate</button>
+                            }
+                            else
+                            {
+                                <button onclick="deleteTask('@task.ID')" class="btn btn-danger btn-center">Delete</button>
+                            }
+                        </div>
                     <td>
                         <div class="custom-dropdown">
                             <div class="status-button-wrapper">
@@ -46,27 +62,16 @@
                             <input type="text" class="form-control guard-search" placeholder="Search Guards" value="@task.Guard" onclick="toggleGuardDropdown(this)" oninput="filterGuardOptions(this)">
                             <ul class="guard-dropdown-menu">
                                 <li class="dropdown-section">Suggested</li>
-                                @if (!string.IsNullOrEmpty(Model.TamName))
-                                {
-                                    <li class="guard-option" data-value="@Model.TamName">@Model.TamName</li>
-                                }
-                                @if (!string.IsNullOrEmpty(Model.CreatorName))
-                                {
-                                    <li class="guard-option" data-value="@Model.CreatorName">@Model.CreatorName</li>
-                                }
-                                @if (!string.IsNullOrEmpty(Model.ProductOwnerName))
-                                {
-                                    <li class="guard-option" data-value="@Model.ProductOwnerName">@Model.ProductOwnerName</li>
-                                }
-                                @foreach (var codeOwnerName in Model.CodeOwnerNames)
-                                {
-                                    <li class="guard-option" data-value="@codeOwnerName">@codeOwnerName</li>
-                                }
+                                    @foreach (var suggestedGuard in Model.SuggestedGuards)
+                                    {
+                                    <li class="guard-option" data-value="@suggestedGuard">@suggestedGuard</li>
+                                    }
+
                                 <li class="dropdown-section">Other</li>
-                                @foreach (var guard in Model.Guards)
-                                {
+                                    @foreach (var guard in Model.Guards)
+                                    {
                                     <li class="guard-option" data-value="@guard">@guard</li>
-                                }
+                                    }
                             </ul>
                         </div>
                     </td>
@@ -119,15 +124,20 @@ function toggleGuardDropdown(input) {
 }
 
 function filterGuardOptions(input) {
-    const filter = input.value.toLowerCase();
+    const filter = input.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const dropdown = input.nextElementSibling;
     const options = dropdown.querySelectorAll(".guard-option");
 
     options.forEach(option => {
-        if (option.textContent.toLowerCase().includes(filter)) {
+        const normalizedOptionText = option.textContent.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        if (normalizedOptionText.includes(filter)) {
             option.style.display = "";
+            const originalText = option.textContent;
+            const regex = new RegExp(filter, "gi");
+            option.innerHTML = originalText.replace(regex, match => `<span class="highlight">${match}</span>`);
         } else {
             option.style.display = "none";
+            option.innerHTML = option.textContent;
         }
     });
 }
