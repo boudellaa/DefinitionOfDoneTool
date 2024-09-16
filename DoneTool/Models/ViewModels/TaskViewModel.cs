@@ -15,5 +15,7 @@ namespace DoneTool.Models.ViewModels
         public string Comment { get; set; }
         public DateTime LastUpdated { get; set; }
         public List<string> SkipReasons { get; set; }
+        public string Link { get; set; }
+        public bool IsDuplicate { get; set; }
     }
 }

@@ -38,12 +38,13 @@ builder.Services.AddScoped<ITaskChecksRepository, SQLTaskChecksRepository>();
 
 builder.Services.AddScoped<JsonTaskService>();
 builder.Services.AddScoped<TaskService>();
+builder.Services.AddScoped<LinkGeneratorService>();
 
 builder.Services.Configure<SkylineApiData>(builder.Configuration.GetSection("SkylineApi"));
 
 builder.Services.AddHttpClient<SkylineApiService>(client =>
 {
-    client.BaseAddress = new Uri("https://api.skyline.be/"); 
+    client.BaseAddress = new Uri("https://api.skyline.be/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 

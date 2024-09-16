@@ -62,7 +62,7 @@ namespace DoneTool.Services
                     Step = this.context.TaskChecks.FirstOrDefault(tch => tch.ID == tc.TaskChecksID).Step,
                 })
                 .Where(cwtc => cwtc.Check != null)
-                .OrderBy(cwtc => cwtc.Step)  // Order by Step column
+                .OrderBy(cwtc => cwtc.Step) 
                 .Select(cwtc => new CheckWithChecklistID
                 {
                     Check = cwtc.Check,
@@ -86,10 +86,9 @@ namespace DoneTool.Services
             };
         }
 
-
         private List<CheckWithChecklistID> CreateNewRelationships(TaskInfo taskInfo)
         {
-            var taskDetails = skylineApiService.GetTaskDetailsAsync(taskInfo).GetAwaiter().GetResult();
+            var taskDetails = this.skylineApiService.GetTaskDetailsAsync(taskInfo).GetAwaiter().GetResult();
             var taskType = taskDetails.Type;
 
             var taskChecks = this.context.TaskChecks
@@ -101,7 +100,7 @@ namespace DoneTool.Services
 
             foreach (var taskCheck in taskChecks)
             {
-                var newTaskChecklistEntry = CreateTaskChecklistEntry(taskInfo, taskCheck);
+                var newTaskChecklistEntry = this.CreateTaskChecklistEntry(taskInfo, taskCheck);
                 this.context.TaskChecklist.Add(newTaskChecklistEntry);
 
                 var check = this.context.Checks.FirstOrDefault(c => c.ID == taskCheck.CheckID);
@@ -112,21 +111,6 @@ namespace DoneTool.Services
                         Check = check,
                         TaskChecklistID = newTaskChecklistEntry.ID,
                     });
-                }
-
-                if (!string.IsNullOrEmpty(taskDetails.ProductOwnerName))
-                {
-                    var duplicateTaskChecklistEntry = CreateTaskChecklistEntry(taskInfo, taskCheck);
-                    this.context.TaskChecklist.Add(duplicateTaskChecklistEntry);
-
-                    if (check != null)
-                    {
-                        newRelationships.Add(new CheckWithChecklistID
-                        {
-                            Check = check,
-                            TaskChecklistID = duplicateTaskChecklistEntry.ID,
-                        });
-                    }
                 }
             }
 
