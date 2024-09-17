@@ -1,4 +1,42 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿function updateActionButtons() {
+    const rows = document.querySelectorAll('tr[data-taskchecklist-id]');
+    let shouldDisableFollowing = false;
+
+    rows.forEach((row, index) => {
+        const actionButton = row.querySelector('.action-button-wrapper .action-button');
+        actionButton.disabled = true; 
+        actionButton.textContent = "No Action";
+
+        if (index === 0) {
+            actionButton.textContent = "Open Outlook";
+            actionButton.disabled = false;
+        } else {
+            const prevRowStatus = rows[index - 1].querySelector('input.status-dropdown').value;
+            const stepName = row.querySelector('.step-title').textContent.trim();
+
+            if (stepName.includes("Code review")) {
+                actionButton.textContent = "Send to CR";
+            } else if (stepName.includes("Quality assurance")) {
+                actionButton.textContent = "Send to QA";
+            }
+            if (shouldDisableFollowing || prevRowStatus !== "DONE") {
+                shouldDisableFollowing = true;
+            }
+
+            if (!shouldDisableFollowing) {
+                if (stepName.includes("Code review")) {
+                    actionButton.disabled = false;
+                } else if (stepName.includes("Quality assurance")) {
+                    actionButton.disabled = false;
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateActionButtons();
+
     const dropdowns = document.querySelectorAll('.custom-dropdown');
     const modal = document.getElementById("commentModal");
     const closeBtn = document.querySelector(".close");
@@ -36,7 +74,7 @@
 
                 if (statusValue === 'SKIPPED') {
                     activeRow = dropdown.closest('tr');
-                    modalTextarea.value = ''; 
+                    modalTextarea.value = '';
                     populateReasonsDropdown(activeRow);
                     modal.style.display = "block";
                 } else {
@@ -46,11 +84,12 @@
                     arrowButton.className = 'arrow-button status-' + statusValue.toLowerCase();
 
                     dropdownMenu.style.display = 'none';
-                    saveTaskUpdate(dropdown.closest('tr'));
+                    saveTaskUpdate(dropdown.closest('tr'), updateActionButtons());
                 }
             });
         });
     });
+
 
     function populateReasonsDropdown(row) {
         const reasonsAttribute = row.getAttribute('data-skip-reasons');
@@ -78,12 +117,12 @@
 
         reasonsDropdown.onchange = function () {
             const selectedReason = this.value;
-            modalTextarea.value = selectedReason; 
+            modalTextarea.value = selectedReason;
         };
     }
 
     modalTextarea.addEventListener('input', function () {
-        reasonsDropdown.value = ''; 
+        reasonsDropdown.value = '';
     });
 
     document.getElementById('submitSkip').onclick = function () {
@@ -139,10 +178,10 @@
         let newHeight = textarea.scrollHeight;
 
         if (newHeight > 125) {
-            textarea.style.height = '125px';  
-            textarea.style.overflowY = 'auto'; 
+            textarea.style.height = '125px';
+            textarea.style.overflowY = 'auto';
         } else {
-            textarea.style.height = newHeight + 'px'; 
+            textarea.style.height = newHeight + 'px';
             textarea.style.overflowY = 'hidden';
         }
     }
@@ -191,7 +230,7 @@ function toggleStatus(button) {
         arrowButton.classList.remove('status-todo', 'status-skipped');
         arrowButton.classList.add('status-done');
 
-        saveTaskUpdate(dropdown.closest('tr'));
+        saveTaskUpdate(dropdown.closest('tr'), updateActionButtons());
     }
 }
 
@@ -206,7 +245,7 @@ function toggleDropdownMenu(button) {
     dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
 }
 
-function saveTaskUpdate(rowElement) {
+function saveTaskUpdate(rowElement, callback) {
     if (!rowElement) {
         console.error('saveTaskUpdate called with null rowElement');
         return;
@@ -265,6 +304,10 @@ function saveTaskUpdate(rowElement) {
             console.log('Received Data:', data);
             console.log(`Received LastUpdated: ${data.lastUpdated}`);
             rowElement.setAttribute('data-last-updated', data.lastUpdated);
+
+            if (typeof callback === "function") {
+                callback();
+            }
         })
         .catch(error => {
             console.error('Error updating task checklist:', error);
@@ -297,4 +340,3 @@ function deleteTask(id) {
         }
     });
 }
-

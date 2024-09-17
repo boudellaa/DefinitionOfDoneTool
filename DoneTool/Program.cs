@@ -38,7 +38,6 @@ builder.Services.AddScoped<ITaskChecksRepository, SQLTaskChecksRepository>();
 
 builder.Services.AddScoped<JsonTaskService>();
 builder.Services.AddScoped<TaskService>();
-builder.Services.AddScoped<LinkGeneratorService>();
 
 builder.Services.Configure<SkylineApiData>(builder.Configuration.GetSection("SkylineApi"));
 

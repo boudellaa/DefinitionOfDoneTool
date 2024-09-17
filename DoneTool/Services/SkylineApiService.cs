@@ -11,18 +11,26 @@ namespace DoneTool.Services
     using DoneTool.Models.SkylineApiModels;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json;
     using Skyline.DataMiner.Utils.JsonOps.Models;
 
+    /// <summary>
+    /// Provides methods to interact with the Skyline API, including authentication and data retrieval.
+    /// </summary>
     public class SkylineApiService
     {
         private readonly HttpClient httpClient;
         private readonly ILogger<SkylineApiService> logger;
         private readonly SkylineApiData options;
-        private string accessToken;
-        private string refreshToken;
+        private string accessToken = string.Empty;
+        private string refreshToken = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SkylineApiService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The <see cref="HttpClient"/> used to send requests to the Skyline API.</param>
+        /// <param name="logger">The logger used to log information, warnings, and errors.</param>
+        /// <param name="options">The Skyline API options containing authentication data.</param>
         public SkylineApiService(HttpClient httpClient, ILogger<SkylineApiService> logger, IOptions<SkylineApiData> options)
         {
             this.httpClient = httpClient;
@@ -30,32 +38,10 @@ namespace DoneTool.Services
             this.options = options.Value;
         }
 
-        private async Task<string> GetAccessTokenAsync()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, "Token");
-
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("username", this.options.Username),
-                new KeyValuePair<string, string>("password", this.options.Password),
-                new KeyValuePair<string, string>("grant_type", "password"),
-            });
-
-            request.Content = content;
-            var response = await this.httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            var tokenResponse = await response.Content.ReadAsStringAsync();
-
-            var tokenData = JsonConvert.DeserializeObject<TokenResponse>(tokenResponse);
-            this.accessToken = tokenData.AccessToken;
-            this.refreshToken = tokenData.RefreshToken;
-
-            this.logger.LogInformation("Access token acquired: {accessToken}", this.accessToken);
-
-            return this.accessToken;
-        }
-
+        /// <summary>
+        /// Retrieves Skyline users from the API.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the API response content as a string.</returns>
         public async Task<string> GetSkylineUsersAsync()
         {
             if (string.IsNullOrEmpty(this.accessToken))
@@ -82,6 +68,12 @@ namespace DoneTool.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves detailed information about a task from the Skyline API.
+        /// </summary>
+        /// <param name="taskInfo">The task information object containing the task ID.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the task details as a <see cref="TaskDetailsDTO"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="taskInfo"/>.</exception>
         public async Task<TaskDetailsDTO> GetTaskDetailsAsync(TaskInfo taskInfo)
         {
             if (taskInfo == null || taskInfo.TaskID < 100000 || taskInfo.TaskID > 999999)
@@ -124,6 +116,12 @@ namespace DoneTool.Services
 
                     var ownerContent = await ownerResponse.Content.ReadAsStringAsync();
                     var driverData = JsonConvert.DeserializeObject<List<DriverResponse>>(ownerContent);
+
+                    if (driverData == null || !driverData.Any())
+                    {
+                        throw new Exception("No driver data returned from API.");
+                    }
+
                     var driver = driverData.FirstOrDefault() ?? throw new Exception("No driver data returned from API.");
                     var allPersonsDriverApi = new List<PersonReference>()
                     {
@@ -160,7 +158,12 @@ namespace DoneTool.Services
             }
         }
 
-
+        /// <summary>
+        /// Fetches task data from the Skyline API based on the task ID.
+        /// </summary>
+        /// <param name="taskId">The task ID used to retrieve the task data.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the task data as a <see cref="TaskResponse"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the task ID is not a valid six-digit number.</exception>
         public async Task<TaskResponse> FetchTaskDataAsync(int taskId)
         {
             if (taskId < 100000 || taskId > 999999)
@@ -179,10 +182,23 @@ namespace DoneTool.Services
 
             var content = await response.Content.ReadAsStringAsync();
             var taskDataList = JsonConvert.DeserializeObject<List<TaskResponse>>(content);
+
+            if (taskDataList == null || !taskDataList.Any())
+            {
+                throw new Exception("No task data returned from API.");
+            }
+
             return taskDataList.FirstOrDefault() ?? throw new Exception("No task data returned from API.");
         }
 
-
+        /// <summary>
+        /// Resolves the name of a person based on a reference and a list of all persons.
+        /// </summary>
+        /// <param name="reference">The person reference containing the ID or name.</param>
+        /// <param name="allPersons">The list of all persons from which to resolve the name.</param>
+        /// <returns>
+        /// A string representing the resolved name of the person, or an empty string if the name could not be resolved.
+        /// </returns>
         private static string ResolveName(PersonReference reference, List<PersonReference> allPersons)
         {
             if (reference == null)
@@ -204,28 +220,88 @@ namespace DoneTool.Services
             return person?.Name ?? string.Empty;
         }
 
+        /// <summary>
+        /// Retrieves an access token for the Skyline API using the username and password.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the access token as a string.</returns>
+        private async Task<string> GetAccessTokenAsync()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "Token");
+
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("username", this.options.Username),
+                new KeyValuePair<string, string>("password", this.options.Password),
+                new KeyValuePair<string, string>("grant_type", "password"),
+            });
+
+            request.Content = content;
+            var response = await this.httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var tokenResponse = await response.Content.ReadAsStringAsync();
+
+            var tokenData = JsonConvert.DeserializeObject<TokenResponse>(tokenResponse);
+
+            if (tokenData == null)
+            {
+                throw new Exception("No token data returned from API.");
+            }
+
+            this.accessToken = tokenData.AccessToken;
+            this.refreshToken = tokenData.RefreshToken;
+
+            this.logger.LogInformation("Access token acquired: {accessToken}", this.accessToken);
+
+            return this.accessToken;
+        }
+
+        /// <summary>
+        /// Represents the response structure for an authentication token.
+        /// </summary>
         private class TokenResponse
         {
+            /// <summary>
+            /// Gets or sets the access token.
+            /// </summary>
             [JsonProperty("access_token")]
-            public string AccessToken { get; set; }
+            public string AccessToken { get; set; } = string.Empty;
 
+            /// <summary>
+            /// Gets or sets the refresh token.
+            /// </summary>
             [JsonProperty("refresh_token")]
-            public string RefreshToken { get; set; }
+            public string RefreshToken { get; set; } = string.Empty;
 
+            /// <summary>
+            /// Gets or sets the token expiration time in seconds.
+            /// </summary>
             [JsonProperty("expires_in")]
-            public int ExpiresIn { get; set; }
+            public int ExpiresIn { get; set; } = 0;
 
+            /// <summary>
+            /// Gets or sets the type of token.
+            /// </summary>
             [JsonProperty("token_type")]
-            public string TokenType { get; set; }
+            public string TokenType { get; set; } = string.Empty;
 
+            /// <summary>
+            /// Gets or sets the username associated with the token.
+            /// </summary>
             [JsonProperty("user_name")]
-            public string UserName { get; set; }
+            public string UserName { get; set; } = string.Empty;
 
+            /// <summary>
+            /// Gets or sets the issued time of the token.
+            /// </summary>
             [JsonProperty(".issued")]
-            public string Issued { get; set; }
+            public string Issued { get; set; } = string.Empty;
 
+            /// <summary>
+            /// Gets or sets the expiration time of the token.
+            /// </summary>
             [JsonProperty(".expires")]
-            public string Expires { get; set; }
+            public string Expires { get; set; } = string.Empty;
         }
     }
 }

@@ -17,6 +17,7 @@
                 <th>Status</th>
                 <th>Guard</th>
                 <th>Comment</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -24,23 +25,24 @@
             {
                 <tr data-taskchecklist-id="@task.ID" data-last-updated="@task.LastUpdated.ToString("o")" data-skip-reasons='@string.Join(",", task.SkipReasons)'>
                     <td class="clickable-cell">
-                        <div>
+                        <div class="step-container">
                             <a href="@task.Link" target="_blank" class="full-cell-link">
-                                <span>@task.Step</span>
+                                <span class="step-title">@task.Step</span>
                                 <img src="~/img/icon.webp" alt="Clickable Icon" class="clickable-icon" />
                             </a>
-                        </div>
-                        <div id="duplicateBtn">
-                            @if (!task.IsDuplicate)
-                            {
-                                <button onclick="duplicateTask('@task.ID')" class="btn btn-primary btn-center">Duplicate</button>
-                            }
-                            else
-                            {
-                                <button onclick="deleteTask('@task.ID')" class="btn btn-danger btn-center">Delete</button>
-                            }
+                            <div id="duplicateBtn">
+                                @if (!task.IsDuplicate)
+                                {
+                                    <button onclick="duplicateTask('@task.ID')" class="btn btn-primary btn-right">+</button>
+                                }
+                                else
+                                {
+                                    <button onclick="deleteTask('@task.ID')" class="btn btn-danger btn-right">-</button>
+                                }
+                            </div>
                         </div>
                     <td>
+
                         <div class="custom-dropdown">
                             <div class="status-button-wrapper">
                                 <button class="status-button @("status-" + task.SelectedStatus.ToLower())" onclick="toggleStatus(this)">
@@ -77,6 +79,16 @@
                     </td>
                     <td>
                         <textarea asp-for="@task.Comment" class="form-control" placeholder="Enter your comment">@task.Comment</textarea>
+                    </td>
+                    <td>
+                        <div class="action-button-wrapper">
+                            <button class="action-button"
+                                @(task.ActionType == "NoAction" || task.ActionType == null ? "disabled" : "")>
+                                    @(task.ActionType == "Kickoff" ? "Open Outlook" :
+                                        task.ActionType == "SendToCR" ? "Send to CR" :
+                                        task.ActionType == "SendToQA" ? "Send to QA" : "No Action")
+                            </button>
+                        </div>
                     </td>
                 </tr>
             }

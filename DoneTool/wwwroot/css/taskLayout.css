@@ -101,6 +101,7 @@
 
 .clickable-cell {
     padding: 0; 
+    margin-right: 5px;
 }
 
 .full-cell-link {
@@ -399,7 +400,6 @@ select.form-control {
     background-color: #45a049;
 }
 
-
 @media screen and (max-width: 768px) {
     .task-checklist th, .task-checklist td {
         font-size: 12px;
@@ -549,12 +549,33 @@ select.form-control {
     font-weight: bold;
 }
 
-.btn-center {
-    display: block;
-    margin: 10px auto; /* Centriranje dugmeta */
+.step-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
-.clickable-cell {
-    vertical-align: top;
+.btn-right {
+    padding: 1px 7px;
+    font-size: 13px; 
+    margin-left: 5px;
 }
 
+.action-button-wrapper {
+    text-align: center;
+}
+
+.action-button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

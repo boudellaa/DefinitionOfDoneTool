@@ -62,6 +62,7 @@ namespace DoneTool.Controllers
         public async Task<ActionResult<ChecksDTO>> PostCheck(ChecksDTO checkDTO)
         {
             var check = mapper.Map<Checks>(checkDTO);
+            check.Link = checkDTO.Link;
             await checksRepository.AddCheck(check);
 
             var createdCheckDTO = mapper.Map<ChecksDTO>(check);
@@ -84,6 +85,7 @@ namespace DoneTool.Controllers
             }
 
             existingCheck.Item = checkDTO.Item;
+            existingCheck.Link = checkDTO.Link;
             await checksRepository.UpdateCheck(existingCheck);
 
             return this.NoContent();

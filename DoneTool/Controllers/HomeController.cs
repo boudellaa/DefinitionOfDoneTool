@@ -28,7 +28,6 @@ namespace DoneTool.Controllers
         private readonly DoneToolContext context;
         private readonly SkylineApiService skylineApiService;
         private readonly ILogger<HomeController> logger;
-        private readonly LinkGeneratorService linkGeneratorService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
@@ -38,21 +37,18 @@ namespace DoneTool.Controllers
         /// <param name="context">Database context for accessing task-related data.</param>
         /// <param name="skylineApiService">Service for interacting with the Skyline API.</param>
         /// <param name="logger">Logger for capturing log information.</param>
-        /// <param name="linkGeneratorService">Service for generating links related to task steps.</param>
         public HomeController(
                               JsonTaskService jsonTaskService,
                               TaskService taskService,
                               DoneToolContext context,
                               SkylineApiService skylineApiService,
-                              ILogger<HomeController> logger,
-                              LinkGeneratorService linkGeneratorService)
+                              ILogger<HomeController> logger)
         {
             this.jsonTaskService = jsonTaskService;
             this.taskService = taskService;
             this.context = context;
             this.skylineApiService = skylineApiService;
             this.logger = logger;
-            this.linkGeneratorService = linkGeneratorService;
         }
 
         /// <summary>
@@ -94,7 +90,7 @@ namespace DoneTool.Controllers
 
             AddRole(info.ProductOwnerName, "DPO");
             AddRole(info.TamName, "TAM");
-            AddRole(info.CreatorName, "TC");
+            AddRole(info.CreatorName, "Task Creator");
 
             foreach (var codeOwnerName in info.CodeOwnerNames.Distinct())
             {
@@ -181,9 +177,53 @@ namespace DoneTool.Controllers
                 Checks = orderedChecks.Select(cwtc =>
                 {
                     var isDuplicate = this.context.TaskChecklist
-                                        .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                        .Select(tc => tc.IsDuplicate)
-                                        .FirstOrDefault();
+                                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                                  .Select(tc => tc.IsDuplicate)
+                                                  .FirstOrDefault();
+
+                    var link = this.context.Checks
+                                           .Where(chk => chk.ID == cwtc.Check.ID)
+                                           .Select(chk => chk.Link)
+                                           .FirstOrDefault();
+
+                    var selectedStatus = this.context.TaskChecklist
+                                                     .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                                     .Select(tc => tc.Status.ToString())
+                                                     .FirstOrDefault();
+
+                    var comment = this.context.TaskChecklist
+                                              .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                              .Select(tc => tc.Comment)
+                                              .FirstOrDefault();
+
+                    var guard = this.context.TaskChecklist
+                                            .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                            .Select(tc => tc.Guard)
+                                            .FirstOrDefault();
+
+                    var lastUpdated = this.context.TaskChecklist
+                                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
+                                                  .Select(tc => tc.LastUpdated)
+                                                  .FirstOrDefault();
+
+                    var skipReasons = this.context.CheckSkipReasons
+                                                  .Where(csr => csr.CheckID == cwtc.Check.ID)
+                                                  .Select(csr => csr.Reason)
+                                                  .ToList();
+
+                    string actionType = string.Empty;
+                    if (cwtc.Check.Item.Contains("Kickoff meeting"))
+                    {
+                        actionType = "Kickoff";
+                    }
+                    else if (cwtc.Check.Item.Contains("Code Review"))
+                    {
+                        actionType = "SendToCR";
+                    }
+                    else if (cwtc.Check.Item.Contains("Quality Assurance"))
+                    {
+                        actionType = "SendToQA";
+                    }
 
                     if (!isDuplicate)
                     {
@@ -191,28 +231,14 @@ namespace DoneTool.Controllers
                         {
                             ID = cwtc.TaskChecklistID,
                             Step = $"{stepNumber++.ToString("D2")}. {cwtc.Check.Item}",
-                            SelectedStatus = this.context.TaskChecklist
-                                                        .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                        .Select(tc => tc.Status.ToString())
-                                                        .FirstOrDefault() ?? "TODO",
-                            Comment = this.context.TaskChecklist
-                                                    .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                    .Select(tc => tc.Comment)
-                                                    .FirstOrDefault() ?? string.Empty,
-                            Guard = this.context.TaskChecklist
-                                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                  .Select(tc => tc.Guard)
-                                                  .FirstOrDefault() ?? string.Empty,
-                            LastUpdated = this.context.TaskChecklist
-                                               .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                               .Select(tc => tc.LastUpdated)
-                                               .FirstOrDefault(),
+                            SelectedStatus = selectedStatus ?? "TODO",
+                            Comment = comment ?? string.Empty,
+                            Guard = guard ?? string.Empty,
+                            LastUpdated = lastUpdated,
                             IsDuplicate = isDuplicate,
-                            SkipReasons = this.context.CheckSkipReasons
-                                                .Where(csr => csr.CheckID == cwtc.Check.ID)
-                                                .Select(csr => csr.Reason)
-                                                .ToList(),
-                            Link = this.linkGeneratorService.GenerateStepLink(cwtc.Check.Item),
+                            SkipReasons = skipReasons,
+                            Link = link ?? string.Empty,
+                            ActionType = actionType ?? string.Empty,
                         };
                     }
                     else
@@ -220,29 +246,15 @@ namespace DoneTool.Controllers
                         return new TaskViewModel
                         {
                             ID = cwtc.TaskChecklistID,
-                            Step = $"{cwtc.Check.Item}",
-                            SelectedStatus = this.context.TaskChecklist
-                                                        .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                        .Select(tc => tc.Status.ToString())
-                                                        .FirstOrDefault() ?? "TODO",
-                            Comment = this.context.TaskChecklist
-                                                    .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                    .Select(tc => tc.Comment)
-                                                    .FirstOrDefault() ?? string.Empty,
-                            Guard = this.context.TaskChecklist
-                                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                  .Select(tc => tc.Guard)
-                                                  .FirstOrDefault() ?? string.Empty,
-                            LastUpdated = this.context.TaskChecklist
-                                               .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                               .Select(tc => tc.LastUpdated)
-                                               .FirstOrDefault(),
+                            Step = string.Empty,
+                            SelectedStatus = selectedStatus ?? "TODO",
+                            Comment = comment ?? string.Empty,
+                            Guard = guard ?? string.Empty,
+                            LastUpdated = lastUpdated,
                             IsDuplicate = isDuplicate,
-                            SkipReasons = this.context.CheckSkipReasons
-                                                .Where(csr => csr.CheckID == cwtc.Check.ID)
-                                                .Select(csr => csr.Reason)
-                                                .ToList(),
-                            Link = this.linkGeneratorService.GenerateStepLink(cwtc.Check.Item),
+                            SkipReasons = skipReasons,
+                            Link = link ?? string.Empty,
+                            ActionType = actionType ?? string.Empty,
                         };
                     }
                 }).ToList(),

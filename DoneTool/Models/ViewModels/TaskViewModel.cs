@@ -80,5 +80,7 @@ namespace DoneTool.Models.ViewModels
         /// A boolean value where <c>true</c> indicates that the task step is a duplicate, and <c>false</c> indicates that it is not.
         /// </value>
         public bool IsDuplicate { get; set; }
+
+        public string ActionType { get; set; }
     }
 }

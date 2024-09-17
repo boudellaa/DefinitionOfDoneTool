@@ -14,5 +14,10 @@ namespace DoneTool.Models.DTO
         /// Gets or sets the name or description of the check item.
         /// </summary>
         public string Item { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the link associated with the check.
+        /// </summary>
+        public string Link { get; set; } = string.Empty;
     }
 }
