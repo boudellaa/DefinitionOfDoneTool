@@ -29,6 +29,12 @@ namespace DoneTool.Data
         /// </summary>
         public DbSet<TaskChecks> TaskChecks { get; set; }
 
+        /// <summary>
+        /// Gets or sets the DbSet of CheckSkipReasons.
+        /// </summary>
+        /// <value>
+        /// A collection of <see cref="CheckSkipReason"/> entities that represent reasons for skipping checks.
+        /// </value>
         public DbSet<CheckSkipReason> CheckSkipReasons { get; set; }
     }
 }

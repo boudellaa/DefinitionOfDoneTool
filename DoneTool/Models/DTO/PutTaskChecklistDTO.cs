@@ -10,6 +10,9 @@ namespace DoneTool.Models.DTO
     /// </summary>
     public class PutTaskChecklistDTO : BaseTaskChecklistDTO
     {
+        /// <summary>
+        /// Gets or sets the timestamp of the last update to this record.
+        /// </summary>
         public DateTime LastUpdated { get; set; }
 
         /// <summary>

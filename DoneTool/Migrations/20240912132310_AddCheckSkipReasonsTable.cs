@@ -1,10 +1,14 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿// <copyright file="20240912132310_AddCheckSkipReasonsTable.cs" company="Skyline Communications">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 #nullable disable
 
 namespace DoneTool.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     /// <inheritdoc />
     public partial class AddCheckSkipReasonsTable : Migration
     {
@@ -17,7 +21,7 @@ namespace DoneTool.Migrations
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CheckID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    Reason = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                 },
                 constraints: table =>
                 {

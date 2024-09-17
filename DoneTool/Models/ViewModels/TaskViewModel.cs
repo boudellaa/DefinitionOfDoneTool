@@ -4,18 +4,81 @@
 
 namespace DoneTool.Models.ViewModels
 {
-    using Microsoft.AspNetCore.Mvc.Rendering;
-
+    /// <summary>
+    /// Represents a view model for displaying detailed information about a specific task step.
+    /// </summary>
     public class TaskViewModel
     {
+        /// <summary>
+        /// Gets or sets the unique identifier for the task checklist entry.
+        /// </summary>
+        /// <value>
+        /// A <see cref="Guid"/> representing the ID of the task checklist entry.
+        /// </value>
         public Guid ID { get; set; }
-        public string Step { get; set; }
-        public string SelectedStatus { get; set; }
-        public string Guard { get; set; }
-        public string Comment { get; set; }
+
+        /// <summary>
+        /// Gets or sets the title of the task step.
+        /// </summary>
+        /// <value>
+        /// A string representing the title of the task step.
+        /// </value>
+        public string Step { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the selected status of the task step.
+        /// </summary>
+        /// <value>
+        /// A string representing the current status of the task step (e.g., TODO, DONE).
+        /// </value>
+        public string SelectedStatus { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the guard associated with the task step.
+        /// </summary>
+        /// <value>
+        /// A string representing the name of the guard assigned to the task step.
+        /// </value>
+        public string Guard { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the comment related to the task step.
+        /// </summary>
+        /// <value>
+        /// A string representing the comment added to the task step.
+        /// </value>
+        public string Comment { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the timestamp of the last update made to the task step.
+        /// </summary>
+        /// <value>
+        /// A <see cref="DateTime"/> representing the date and time of the last update.
+        /// </value>
         public DateTime LastUpdated { get; set; }
-        public List<string> SkipReasons { get; set; }
-        public string Link { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of reasons for skipping the task step.
+        /// </summary>
+        /// <value>
+        /// A list of strings representing the reasons for skipping the task step.
+        /// </value>
+        public List<string> SkipReasons { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Gets or sets the link associated with the task step.
+        /// </summary>
+        /// <value>
+        /// A string representing a link associated with the task step.
+        /// </value>
+        public string Link { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the task step is a duplicate.
+        /// </summary>
+        /// <value>
+        /// A boolean value where <c>true</c> indicates that the task step is a duplicate, and <c>false</c> indicates that it is not.
+        /// </value>
         public bool IsDuplicate { get; set; }
     }
 }

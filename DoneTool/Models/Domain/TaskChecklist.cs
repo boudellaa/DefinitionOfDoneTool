@@ -41,7 +41,23 @@ namespace DoneTool.Models.Domain
         /// Gets or sets the identifier for the associated task checks.
         /// </summary>
         public Guid TaskChecksID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timestamp of the last update to this record.
+        /// </summary>
+        /// <value>
+        /// A <see cref="DateTime"/> representing the UTC date and time when this record was last updated.
+        /// Defaults to the current UTC date and time when the record is created.
+        /// </value>
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this record is a duplicate.
+        /// </summary>
+        /// <value>
+        /// A boolean value where <c>true</c> indicates that the record is a duplicate, and <c>false</c> indicates that it is not.
+        /// Defaults to <c>false</c>.
+        /// </value>
         public bool IsDuplicate { get; set; } = false;
     }
 }

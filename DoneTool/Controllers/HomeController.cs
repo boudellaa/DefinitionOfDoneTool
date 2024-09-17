@@ -16,6 +16,11 @@ namespace DoneTool.Controllers
     using Newtonsoft.Json;
     using Skyline.DataMiner.Utils.JsonOps.Services;
 
+    /// <summary>
+    /// The HomeController class manages the main operations of the DoneTool application,
+    /// including loading task information, interacting with Skyline API, and generating the
+    /// main page view.
+    /// </summary>
     public class HomeController : Controller
     {
         private readonly JsonTaskService jsonTaskService;
@@ -25,7 +30,17 @@ namespace DoneTool.Controllers
         private readonly ILogger<HomeController> logger;
         private readonly LinkGeneratorService linkGeneratorService;
 
-        public HomeController(JsonTaskService jsonTaskService,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class.
+        /// </summary>
+        /// <param name="jsonTaskService">Service for handling JSON tasks.</param>
+        /// <param name="taskService">Service for handling task-related operations.</param>
+        /// <param name="context">Database context for accessing task-related data.</param>
+        /// <param name="skylineApiService">Service for interacting with the Skyline API.</param>
+        /// <param name="logger">Logger for capturing log information.</param>
+        /// <param name="linkGeneratorService">Service for generating links related to task steps.</param>
+        public HomeController(
+                              JsonTaskService jsonTaskService,
                               TaskService taskService,
                               DoneToolContext context,
                               SkylineApiService skylineApiService,
@@ -40,6 +55,12 @@ namespace DoneTool.Controllers
             this.linkGeneratorService = linkGeneratorService;
         }
 
+        /// <summary>
+        /// Handles the HTTP GET request for the main page of the application.
+        /// Loads task information from a JSON file, interacts with the Skyline API to retrieve
+        /// additional task details, and prepares the data for rendering the page.
+        /// </summary>
+        /// <returns>The main page view with task and guard information.</returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -84,6 +105,11 @@ namespace DoneTool.Controllers
 
             var usersJson = await this.skylineApiService.GetSkylineUsersAsync();
             var users = JsonConvert.DeserializeObject<List<SkylineUser>>(usersJson);
+
+            if (users == null)
+            {
+                return this.NotFound("Skyline users could not be loaded.");
+            }
 
             var otherGuards = new HashSet<string>(users.Select(u => u.Name).Except(rolesDict.Keys).ToList());
             var sortedGuards = otherGuards.OrderBy(g => g).ToList();
