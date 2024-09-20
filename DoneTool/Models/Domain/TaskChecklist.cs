@@ -51,13 +51,6 @@ namespace DoneTool.Models.Domain
         /// </value>
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this record is a duplicate.
-        /// </summary>
-        /// <value>
-        /// A boolean value where <c>true</c> indicates that the record is a duplicate, and <c>false</c> indicates that it is not.
-        /// Defaults to <c>false</c>.
-        /// </value>
-        public bool IsDuplicate { get; set; } = false;
+        public Guid? OriginalTaskChecklistID { get; set; }
     }
 }

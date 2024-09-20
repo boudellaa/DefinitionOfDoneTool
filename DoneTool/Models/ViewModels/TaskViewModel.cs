@@ -73,14 +73,16 @@ namespace DoneTool.Models.ViewModels
         /// </value>
         public string Link { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the task step is a duplicate.
-        /// </summary>
-        /// <value>
-        /// A boolean value where <c>true</c> indicates that the task step is a duplicate, and <c>false</c> indicates that it is not.
-        /// </value>
-        public bool IsDuplicate { get; set; }
+        public Guid? OriginalTaskChecklistID { get; set; }
 
         public string ActionType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of duplicates for this task step.
+        /// </summary>
+        /// <value>
+        /// A list of <see cref="TaskViewModel"/> representing the duplicates of the task step.
+        /// </value>
+        public List<TaskViewModel> Duplicates { get; set; } = new List<TaskViewModel>();
     }
 }

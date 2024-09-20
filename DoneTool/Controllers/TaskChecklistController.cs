@@ -10,6 +10,7 @@ namespace DoneTool.Controllers
     using DoneTool.Models.DTO;
     using DoneTool.Repositories.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TaskChecklistController"/> class.
@@ -148,7 +149,7 @@ namespace DoneTool.Controllers
                 Guard = existingTaskChecklist.Guard,
                 Comment = existingTaskChecklist.Comment,
                 LastUpdated = DateTime.UtcNow,
-                IsDuplicate = true,
+                OriginalTaskChecklistID = id,
             };
 
             await taskChecklistRepository.AddTaskChecklist(duplicateTaskChecklist);
@@ -166,7 +167,7 @@ namespace DoneTool.Controllers
         public async Task<IActionResult> DeleteDuplicateTaskChecklist(Guid id)
         {
             var taskChecklist = await taskChecklistRepository.GetTaskChecklistById(id);
-            if (taskChecklist == null || !taskChecklist.IsDuplicate)
+            if (taskChecklist == null || taskChecklist.OriginalTaskChecklistID == null)
             {
                 return this.NotFound("Cannot delete non-duplicate task checklist.");
             }
@@ -174,6 +175,28 @@ namespace DoneTool.Controllers
             await taskChecklistRepository.DeleteTaskChecklist(id);
 
             return this.NoContent();
+        }
+
+        /// <summary>
+        /// Gets the duplicate of a specific task checklist.
+        /// </summary>
+        /// <param name="id">The ID of the original task checklist.</param>
+        /// <returns>The duplicated <see cref="GetTaskChecklistDTO"/>.</returns>
+        [HttpGet("{id}/duplicate")]
+        public async Task<ActionResult<GetTaskChecklistDTO>> GetDuplicateTaskChecklist(Guid id)
+        {
+            var taskChecklists = await taskChecklistRepository.GetAllTaskChecklists();
+
+            var duplicateTaskChecklist = taskChecklists.FirstOrDefault(tc => tc.OriginalTaskChecklistID == id);
+
+            if (duplicateTaskChecklist == null)
+            {
+                return this.NotFound("No duplicate found for the specified task checklist.");
+            }
+
+            var getTaskChecklistDTO = mapper.Map<GetTaskChecklistDTO>(duplicateTaskChecklist);
+
+            return this.Ok(getTaskChecklistDTO);
         }
     }
 }

@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+#pragma warning disable CS8073
+
 namespace DoneTool.Controllers
 {
     using System.Collections.Generic;
@@ -112,19 +114,65 @@ namespace DoneTool.Controllers
 
             var checksWithTaskChecklist = this.taskService.GetChecksForTask(taskInfo);
 
-            var orderedChecks = checksWithTaskChecklist
-                .OrderBy(cwtc => this.context.TaskChecks
-                                            .Where(tch => tch.ID == this.context.TaskChecklist
-                                                                    .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                                    .Select(tc => tc.TaskChecksID)
-                                                                    .FirstOrDefault())
-                                            .Select(tch => tch.Step)
-                                            .FirstOrDefault())
-                .ThenBy(cwtc => this.context.TaskChecklist
-                                            .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                            .Select(tc => tc.IsDuplicate)
-                                            .FirstOrDefault())
+            var orderedChecks = this.context.TaskChecklist
+                .Where(tc => tc.OriginalTaskChecklistID == null)
+                .Select(tc => new TaskViewModel
+                {
+                    ID = tc.ID,
+
+                    Step = this.context.TaskChecks
+                            .Where(check => check.ID == tc.TaskChecksID)
+                            .Select(check => this.context.Checks
+                                           .Where(c => c.ID == check.CheckID)
+                                           .Select(c => c.Item)
+                                           .FirstOrDefault())
+                            .FirstOrDefault() ?? string.Empty,
+
+                    Link = this.context.TaskChecks
+                            .Where(check => check.ID == tc.TaskChecksID)
+                            .Select(check => this.context.Checks
+                                             .Where(c => c.ID == check.CheckID)
+                                             .Select(c => c.Link)
+                                             .FirstOrDefault())
+                            .FirstOrDefault() ?? string.Empty,
+
+                    SelectedStatus = tc.Status.ToString(),
+                    Comment = tc.Comment ?? string.Empty,
+                    Guard = tc.Guard ?? string.Empty,
+                    LastUpdated = tc.LastUpdated,
+
+                    SkipReasons = this.context.TaskChecks
+                        .Where(check => check.ID == tc.TaskChecksID)
+                        .Select(check => this.context.Checks
+                            .Where(c => c.ID == check.CheckID)
+                            .Select(c => this.context.CheckSkipReasons
+                                .Where(cs => cs.CheckID == c.ID)
+                                .Select(cs => cs.Reason)
+                                .ToList())
+                            .FirstOrDefault())
+                        .FirstOrDefault() ?? new List<string>(),
+
+                    Duplicates = this.context.TaskChecklist
+                        .Where(dup => dup.OriginalTaskChecklistID == tc.ID)
+                        .Select(dup => new TaskViewModel
+                        {
+                            ID = dup.ID,
+                            SelectedStatus = dup.Status.ToString(),
+                            Comment = dup.Comment ?? string.Empty,
+                            Guard = dup.Guard ?? string.Empty,
+                            LastUpdated = dup.LastUpdated,
+                            OriginalTaskChecklistID = dup.OriginalTaskChecklistID,
+                        }).ToList(),
+                })
+                .OrderBy(task => this.context.TaskChecklist
+                     .Where(tc => tc.ID == task.ID)
+                     .Select(tc => this.context.TaskChecks
+                                   .Where(tCheck => tCheck.ID == tc.TaskChecksID)
+                                   .Select(tCheck => tCheck.Step)
+                                   .FirstOrDefault())
+                     .FirstOrDefault())
                 .ToList();
+
 
             int stepNumber = 1;
 
@@ -174,90 +222,58 @@ namespace DoneTool.Controllers
 
                     return name;
                 }).ToList(),
-                Checks = orderedChecks.Select(cwtc =>
+                Checks = orderedChecks.Select(task =>
                 {
-                    var isDuplicate = this.context.TaskChecklist
-                                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                  .Select(tc => tc.IsDuplicate)
-                                                  .FirstOrDefault();
+                    var taskViewModels = new List<TaskViewModel>();
 
-                    var link = this.context.Checks
-                                           .Where(chk => chk.ID == cwtc.Check.ID)
-                                           .Select(chk => chk.Link)
-                                           .FirstOrDefault();
+                    var actionType = string.Empty;
 
-                    var selectedStatus = this.context.TaskChecklist
-                                                     .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                     .Select(tc => tc.Status.ToString())
-                                                     .FirstOrDefault();
-
-                    var comment = this.context.TaskChecklist
-                                              .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                              .Select(tc => tc.Comment)
-                                              .FirstOrDefault();
-
-                    var guard = this.context.TaskChecklist
-                                            .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                            .Select(tc => tc.Guard)
-                                            .FirstOrDefault();
-
-                    var lastUpdated = this.context.TaskChecklist
-                                                  .Where(tc => tc.ID == cwtc.TaskChecklistID)
-                                                  .Select(tc => tc.LastUpdated)
-                                                  .FirstOrDefault();
-
-                    var skipReasons = this.context.CheckSkipReasons
-                                                  .Where(csr => csr.CheckID == cwtc.Check.ID)
-                                                  .Select(csr => csr.Reason)
-                                                  .ToList();
-
-                    string actionType = string.Empty;
-                    if (cwtc.Check.Item.Contains("Kickoff meeting"))
+                    if (task.Step.Contains("Kickoff meeting"))
                     {
                         actionType = "Kickoff";
                     }
-                    else if (cwtc.Check.Item.Contains("Code Review"))
+                    else if (task.Step.Contains("Code Review"))
                     {
                         actionType = "SendToCR";
                     }
-                    else if (cwtc.Check.Item.Contains("Quality Assurance"))
+                    else if (task.Step.Contains("Quality Assurance"))
                     {
                         actionType = "SendToQA";
                     }
 
-                    if (!isDuplicate)
+                    taskViewModels.Add(new TaskViewModel
                     {
-                        return new TaskViewModel
-                        {
-                            ID = cwtc.TaskChecklistID,
-                            Step = $"{stepNumber++.ToString("D2")}. {cwtc.Check.Item}",
-                            SelectedStatus = selectedStatus ?? "TODO",
-                            Comment = comment ?? string.Empty,
-                            Guard = guard ?? string.Empty,
-                            LastUpdated = lastUpdated,
-                            IsDuplicate = isDuplicate,
-                            SkipReasons = skipReasons,
-                            Link = link ?? string.Empty,
-                            ActionType = actionType ?? string.Empty,
-                        };
-                    }
-                    else
+                        ID = task.ID,
+                        Step = $"{stepNumber++.ToString("D2")}. {task.Step}",
+                        SelectedStatus = task.SelectedStatus,
+                        Comment = task.Comment,
+                        Guard = task.Guard,
+                        LastUpdated = task.LastUpdated,
+                        OriginalTaskChecklistID = null,
+                        SkipReasons = task.SkipReasons,
+                        Link = task.Link ?? string.Empty,
+                        ActionType = actionType ?? string.Empty,
+                    });
+
+                    foreach (var duplicate in task.Duplicates)
                     {
-                        return new TaskViewModel
+                        taskViewModels.Add(new TaskViewModel
                         {
-                            ID = cwtc.TaskChecklistID,
+                            ID = duplicate.ID,
                             Step = string.Empty,
-                            SelectedStatus = selectedStatus ?? "TODO",
-                            Comment = comment ?? string.Empty,
-                            Guard = guard ?? string.Empty,
-                            LastUpdated = lastUpdated,
-                            IsDuplicate = isDuplicate,
-                            SkipReasons = skipReasons,
-                            Link = link ?? string.Empty,
-                            ActionType = actionType ?? string.Empty,
-                        };
+                            SelectedStatus = duplicate.SelectedStatus,
+                            Comment = duplicate.Comment,
+                            Guard = duplicate.Guard,
+                            LastUpdated = duplicate.LastUpdated,
+                            OriginalTaskChecklistID = duplicate.OriginalTaskChecklistID,
+                            SkipReasons = duplicate.SkipReasons,
+                            Link = string.Empty,
+                            ActionType = string.Empty,
+                        });
                     }
-                }).ToList(),
+
+                    return taskViewModels;
+                }).SelectMany(tvm => tvm).ToList(),
             };
 
             return this.View(viewModel);
