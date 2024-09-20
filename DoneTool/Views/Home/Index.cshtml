@@ -1,4 +1,16 @@
 ﻿@model DoneTool.Models.ViewModels.PageModel
+@using System.Text.Json
+
+<script type="text/javascript">
+    var tasks = @Html.Raw(JsonSerializer.Serialize(Model.Checks.Select(task => new
+        {
+            TaskId = task.ID,
+            Guard = task.Guard,
+            SuggestedGuards = Model.SuggestedGuards,
+            OtherGuards = Model.Guards
+        })));
+</script>
+
 
 <link rel="stylesheet" href="~/css/taskLayout.css">
 
@@ -21,28 +33,30 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var task in Model.Checks)
+            @foreach (var task in Model.Checks.Where(t => t.OriginalTaskChecklistID == null))
             {
+                var matchingDuplicate = Model.Checks.FirstOrDefault(dup => dup.OriginalTaskChecklistID == task.ID);
+                var duplicates = Model.Checks.Where(dup => dup.OriginalTaskChecklistID == task.ID).ToList();
+                var isLastDuplicate = duplicates.Count == 0;
+
                 <tr data-taskchecklist-id="@task.ID" data-last-updated="@task.LastUpdated.ToString("o")" data-skip-reasons='@string.Join(",", task.SkipReasons)'>
-                    <td class="clickable-cell">
+                    <td class="clickable-cell step-cell">
                         <div class="step-container">
                             <a href="@task.Link" target="_blank" class="full-cell-link">
                                 <span class="step-title">@task.Step</span>
                                 <img src="~/img/icon.webp" alt="Clickable Icon" class="clickable-icon" />
                             </a>
-                            <div id="duplicateBtn">
-                                @if (!task.IsDuplicate)
+                            <div class="button-group">
+                                <button onclick="duplicateTask('@task.ID', this)" class="btn btn-primary btn-right">+</button>
+                                @if (matchingDuplicate != null)
                                 {
-                                    <button onclick="duplicateTask('@task.ID')" class="btn btn-primary btn-right">+</button>
-                                }
-                                else
-                                {
-                                    <button onclick="deleteTask('@task.ID')" class="btn btn-danger btn-right">-</button>
+                                    <button class="btn btn-danger btn-right delete-btn" onclick="deleteTask('@matchingDuplicate.ID', this)">-</button>
                                 }
                             </div>
                         </div>
-                    <td>
+                    </td>
 
+                    <td class="status-cell">
                         <div class="custom-dropdown">
                             <div class="status-button-wrapper">
                                 <button class="status-button @("status-" + task.SelectedStatus.ToLower())" onclick="toggleStatus(this)">
@@ -58,45 +72,93 @@
                             </ul>
                             <input type="hidden" name="status" class="form-control status-dropdown" value="@task.SelectedStatus">
                         </div>
+
+                        @if (matchingDuplicate != null)
+                        {
+                            <div class="custom-dropdown duplicated-field">
+                                <div class="status-button-wrapper">
+                                    <button class="status-button @("status-" + matchingDuplicate.SelectedStatus.ToLower()) duplicate" onclick="toggleStatus(this)">
+                                        @matchingDuplicate.SelectedStatus
+                                    </button>
+                                    <button class="arrow-button status-@matchingDuplicate.SelectedStatus.ToLower()" onclick="toggleDropdownMenu(this)">
+                                        <span class="dropdown-arrow">▼</span>
+                                    </button>
+                                </div>
+                                <ul class="dropdown-menu">
+                                    <li class="status-todo" data-value="TODO">TODO</li>
+                                    <li class="status-skipped" data-value="SKIPPED">SKIPPED</li>
+                                </ul>
+                                <input type="hidden" name="status" class="form-control status-dropdown" value="@matchingDuplicate.SelectedStatus">
+                            </div>
+                        }
                     </td>
-                    <td>
+
+                    <td class="guard-cell">
                         <div class="custom-guard-dropdown">
                             <input type="text" class="form-control guard-search" placeholder="Search Guards" value="@task.Guard" onclick="toggleGuardDropdown(this)" oninput="filterGuardOptions(this)">
                             <ul class="guard-dropdown-menu">
                                 <li class="dropdown-section">Suggested</li>
-                                    @foreach (var suggestedGuard in Model.SuggestedGuards)
-                                    {
+                                @foreach (var suggestedGuard in Model.SuggestedGuards)
+                                {
                                     <li class="guard-option" data-value="@suggestedGuard">@suggestedGuard</li>
-                                    }
-
+                                }
                                 <li class="dropdown-section">Other</li>
-                                    @foreach (var guard in Model.Guards)
-                                    {
+                                @foreach (var guard in Model.Guards)
+                                {
                                     <li class="guard-option" data-value="@guard">@guard</li>
-                                    }
+                                }
                             </ul>
                         </div>
+
+                        @if (matchingDuplicate != null)
+                        {
+                            <div class="custom-guard-dropdown duplicated-field">
+                                <input type="text" class="form-control guard-search duplicate" placeholder="Search Guards" value="@matchingDuplicate.Guard" onclick="toggleGuardDropdown(this)" oninput="filterGuardOptions(this)">
+                                <ul class="guard-dropdown-menu">
+                                    <li class="dropdown-section">Suggested</li>
+                                    @foreach (var suggestedGuard in Model.SuggestedGuards)
+                                    {
+                                        <li class="guard-option" data-value="@suggestedGuard">@suggestedGuard</li>
+                                    }
+                                    <li class="dropdown-section">Other</li>
+                                    @foreach (var guard in Model.Guards)
+                                    {
+                                        <li class="guard-option" data-value="@guard">@guard</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
                     </td>
-                    <td>
+
+                    <td class="comment-cell">
                         <textarea asp-for="@task.Comment" class="form-control" placeholder="Enter your comment">@task.Comment</textarea>
+
+                        @if (matchingDuplicate != null)
+                        {
+                            <textarea class="form-control duplicate duplicated-field" placeholder="Enter your comment">@matchingDuplicate.Comment</textarea>
+                        }
                     </td>
-                    <td>
+
+                    <td class="action-cell">
                         <div class="action-button-wrapper">
                             <button class="action-button"
-                                @(task.ActionType == "NoAction" || task.ActionType == null ? "disabled" : "")>
-                                    @(task.ActionType == "Kickoff" ? "Open Outlook" :
-                                        task.ActionType == "SendToCR" ? "Send to CR" :
-                                        task.ActionType == "SendToQA" ? "Send to QA" : "No Action")
+                            @(task.ActionType == "NoAction" || task.ActionType == null ? "disabled" : "")
+                                    onclick="@(task.ActionType == "Kickoff" ? $"scheduleMeeting('{Model.TaskTitle}', '{Model.TamName}', '{Model.ProductOwnerName}')" : "")">
+                                @(task.ActionType == "Kickoff" ? "Schedule Meeting" :
+                                    task.ActionType == "SendToCR" ? "Send to CR" :
+                                    task.ActionType == "SendToQA" ? "Send to QA" : "No Action")
                             </button>
                         </div>
+
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
-<div class="send-cr-button-wrapper">
-    <button class="send-cr-button">Send to CR</button>
+
+<div class="onenote-button-wrapper">
+    <button class="btn btn-primary" onclick="openOneNote()">Open OneNote</button>
 </div>
 
 <div id="commentModal" class="modal">

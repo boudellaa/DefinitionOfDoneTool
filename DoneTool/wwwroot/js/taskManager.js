@@ -8,7 +8,7 @@
         actionButton.textContent = "No Action";
 
         if (index === 0) {
-            actionButton.textContent = "Open Outlook";
+            actionButton.textContent = "Schedule Meeting";
             actionButton.disabled = false;
         } else {
             const prevRowStatus = rows[index - 1].querySelector('input.status-dropdown').value;
@@ -246,23 +246,18 @@ function toggleDropdownMenu(button) {
 }
 
 function saveTaskUpdate(rowElement, callback) {
-    if (!rowElement) {
-        console.error('saveTaskUpdate called with null rowElement');
-        return;
-    }
-
     const taskChecklistId = rowElement.getAttribute('data-taskchecklist-id');
     const updatedStatus = rowElement.querySelector('input.status-dropdown').value;
     const updatedComment = rowElement.querySelector('textarea').value;
     const updatedGuard = rowElement.querySelector('input.guard-search').value;
     let lastUpdated = rowElement.getAttribute('data-last-updated');
 
-    if (!lastUpdated) {
-        console.error('LastUpdated is null or undefined');
-        return;
-    }
+    // Handle duplicate fields (if they exist)
+    const duplicateStatusElement = rowElement.querySelector('.status-button.duplicate');
+    const duplicateCommentElement = rowElement.querySelector('textarea.duplicate');
+    const duplicateGuardElement = rowElement.querySelector('input.guard-search.duplicate');
 
-    console.log(`Sending LastUpdated: ${lastUpdated}`);
+    const duplicateExists = duplicateStatusElement && duplicateCommentElement && duplicateGuardElement;
 
     const statusMap = {
         "TODO": 0,
@@ -270,49 +265,93 @@ function saveTaskUpdate(rowElement, callback) {
         "DONE": 2
     };
 
+    const originalTaskUpdateData = {
+        status: statusMap[updatedStatus],
+        comment: updatedComment,
+        guard: updatedGuard,
+        lastUpdated: lastUpdated
+    };
+
+    // First, update the original task checklist
     fetch(`/api/taskchecklist/${taskChecklistId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            status: statusMap[updatedStatus],
-            comment: updatedComment,
-            guard: updatedGuard,
-            lastUpdated: lastUpdated
-        })
+        body: JSON.stringify(originalTaskUpdateData)
     })
         .then(response => {
             if (response.status === 409) {
-                console.log(response.text().then(text => Promise.reject(text)));
                 showCustomReloadModal();
                 return;
             }
-
             if (!response.ok) {
-                console.error('Failed to update the task checklist, server responded with:', response.status);
                 return response.text().then(text => Promise.reject(text));
             }
-
             return response.json();
         })
         .then(data => {
             if (!data) {
-                throw new Error("Received undefined or null data from the server");
+                throw new Error("Failed to update the original task checklist.");
             }
-            console.log('Update successful');
-            console.log('Received Data:', data);
-            console.log(`Received LastUpdated: ${data.lastUpdated}`);
+
             rowElement.setAttribute('data-last-updated', data.lastUpdated);
 
-            if (typeof callback === "function") {
-                callback();
+            // Now handle updating the duplicate if it exists
+            if (duplicateExists) {
+                const duplicateStatus = duplicateStatusElement.value;
+                const duplicateComment = duplicateCommentElement.value;
+                const duplicateGuard = duplicateGuardElement.value;
+
+                const duplicateTaskUpdateData = {
+                    status: statusMap[duplicateStatus],
+                    comment: duplicateComment,
+                    guard: duplicateGuard,
+                    lastUpdated: lastUpdated
+                };
+
+                // Fetch duplicate task ID via the API
+                fetch(`/api/taskchecklist/${taskChecklistId}/duplicate`, {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(duplicateData => {
+                        if (duplicateData && duplicateData.id) {
+                            console.log("Duplicate ID:", duplicateData.id);
+                            // Update the duplicate task checklist
+                            fetch(`/api/taskchecklist/${duplicateData.ID}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(duplicateTaskUpdateData)
+                            })
+                                .then(duplicateResponse => {
+                                    if (!duplicateResponse.ok) {
+                                        return duplicateResponse.text().then(text => Promise.reject(text));
+                                    }
+                                    return duplicateResponse.json();
+                                })
+                                .then(duplicateUpdatedData => {
+                                    if (typeof callback === "function") {
+                                        callback();
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating duplicate task checklist:', error);
+                                });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching duplicate task checklist:', error);
+                    });
             }
         })
         .catch(error => {
             console.error('Error updating task checklist:', error);
         });
 }
+
 
 function showCustomReloadModal() {
     const modal = document.getElementById('customReloadModal');
@@ -325,18 +364,94 @@ function showCustomReloadModal() {
     };
 }
 
-function duplicateTask(id) {
-    $.post(`/api/taskchecklist/${id}/duplicate`, function () {
-        location.reload();
+function duplicateTask(id, button) {
+    $.post(`/api/taskchecklist/${id}/duplicate`, function (response) {
+        if (!response || !response.id) {
+            console.error("Failed to duplicate the task.");
+            return;
+        }
+
+        const taskData = tasks.find(t => t.TaskId === id);
+
+        if (!taskData) {
+            console.error("Task data not found for ID:", id);
+            return;
+        }
+
+        var row = $(button).closest('tr');
+
+        var deleteButton = `<button onclick="deleteTask('${response.id}', this)" class="btn btn-danger btn-right delete-btn">-</button>`;
+        $(button).after(deleteButton);
+
+        var statusFieldHtml = `
+            <div class="custom-dropdown duplicated-field">
+                <div class="status-button-wrapper">
+                    <button class="status-button status-todo" onclick="toggleStatus(this)">TODO</button>
+                    <button class="arrow-button status-todo" onclick="toggleDropdownMenu(this)">
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                </div>
+                <ul class="dropdown-menu">
+                    <li class="status-todo" data-value="TODO">TODO</li>
+                    <li class="status-skipped" data-value="SKIPPED">SKIPPED</li>
+                </ul>
+                <input type="hidden" name="status" class="form-control status-dropdown" value="TODO">
+            </div>
+        `;
+
+        row.find('td.status-cell').append(statusFieldHtml);
+
+        var suggestedGuardsHtml = '<li class="dropdown-section">Suggested</li>';
+        taskData.SuggestedGuards.forEach(function (guard) {
+            suggestedGuardsHtml += `<li class="guard-option" data-value="${guard}" onclick="selectGuard(this, '${response.id}')">${guard}</li>`;
+        });
+
+        var otherGuardsHtml = '<li class="dropdown-section">Other</li>';
+        taskData.OtherGuards.forEach(function (guard) {
+            otherGuardsHtml += `<li class="guard-option" data-value="${guard}" onclick="selectGuard(this, '${response.id}')">${guard}</li>`;
+        });
+
+        row.find('td.guard-cell').append(`
+            <div class="custom-guard-dropdown duplicated-field">
+                <input type="text" class="form-control guard-search" placeholder="Search Guards" onclick="toggleGuardDropdown(this)" oninput="filterGuardOptions(this)">
+                <ul class="guard-dropdown-menu">
+                    ${suggestedGuardsHtml}
+                    ${otherGuardsHtml}
+                </ul>
+            </div>
+        `);
+
+        row.find('td.comment-cell').append(`
+            <textarea class="form-control duplicate duplicated-field" placeholder="Enter your comment"></textarea>
+        `);
+    }).fail(function () {
+        console.error("Failed to duplicate task via API.");
     });
 }
 
-function deleteTask(id) {
+function deleteTask(id, button) {
     $.ajax({
         url: `/api/taskchecklist/${id}/duplicate`,
         type: 'DELETE',
         success: function (result) {
-            location.reload();
+            var row = $(button).closest('tr');
+            row.find('.duplicated-field').remove();
+            $(button).remove();
         }
     });
+}
+
+function scheduleMeeting(taskTitle, taskCreator, dpo) {
+    var subject = `Kickoff for ${taskTitle}`;
+    var body = "This is a kickoff meeting for the task.";
+    var to = taskCreator; 
+    var cc = `${dpo}`;
+
+    var mailto_link = `mailto:${to}?subject=${encodeURIComponent(subject)}&cc=${encodeURIComponent(cc)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto_link;
+}
+
+function openOneNote() {
+    var oneNoteLink = "https://skylinebe.sharepoint.com/sites/DeployandAccelerate/EcsProductsNotes/Shared%20Documents/Forms/AllItems.aspx?viewpath=%2Fsites%2FDeployandAccelerate%2FEcsProductsNotes%2FShared%20Documents%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FDeployandAccelerate%2FEcsProductsNotes%2FShared%20Documents%2FNotebooks&viewid=7ec3d9b3%2D4c67%2D4ac9%2Db72b%2D1a46fb69115c";
+    window.open(oneNoteLink, "_blank");
 }
